@@ -1,4 +1,4 @@
-from piracer.vehicles import PiRacerPro
+#from piracer.vehicles import PiRacerPro
 from piracer.vehicles import PiRacerStandard
 from piracer.gamepads import ShanWanGamepad
 
