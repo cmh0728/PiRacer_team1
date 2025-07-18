@@ -46,3 +46,19 @@ cd src/control
 python3 remote_control.py
 ```
 
+### 🖥️ Display Interface  
+- **V,I,P,IP_address**
+
+```bash
+cd display
+sudo nano install_display_service.sh
+```
+
+```bash
+******* CHANGE PATH *******
+```
+
+
+
+
+
