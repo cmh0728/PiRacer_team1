@@ -2,9 +2,9 @@
 
 SERVICE_NAME=piracer-display
 SERVICE_PATH="/etc/systemd/system/${SERVICE_NAME}.service"
-SCRIPT_PATH="/home/team1/piracer_ws/src/board/ip_display.py"
-PYTHON_PATH="/home/team1/piracer_ws/venv/bin/python3"
-WORK_DIR="/home/team1/piracer_ws/src"
+SCRIPT_PATH="/home/team1/piracer_test/src/board/ip_display.py"
+PYTHON_PATH="/home/team1/piracer_test/piracer/bin/python3"
+WORK_DIR="/home/team1/piracer_test/src"
 USER_NAME="team1"
 
 echo "Creating systemd service at ${SERVICE_PATH}..."
