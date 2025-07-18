@@ -22,8 +22,8 @@ void countPulse() {
 void setup() {
   Serial.begin(9600);
   
-  while (CAN_OK != CAN.begin(MCP_STDEXT, CAN_500KBPS, MCP_8MHZ)) {
-    Serial.println("CAN retry..");
+  while (CAN_OK != CAN.begin(MCP_STDEXT, CAN_500KBPS, MCP_16MHZ)) {
+    Serial.println("CAN retry..fuck");
     delay(100);
   }
   Serial.println("CAN success");
@@ -52,7 +52,7 @@ void loop() {
     rpmBytes[1] = rpm & 0xFF;         
 
     
-    byte sendResult = CAN.sendMsgBuf(0x100, 0, 2, rpmBytes);
+    byte sendResult = CAN.sendMsgBuf(0x100, 1, 2, rpmBytes);
     if (sendResult == CAN_OK) {
       Serial.println("CAN  message success");
     } else {
