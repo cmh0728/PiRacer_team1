@@ -58,7 +58,14 @@ sudo nano install_display_service.sh
 ******* CHANGE PATH *******
 ```
 
+### 🔧 CAN Communication Test
 
+```Arduino upload
+src/Arduino/can_speed.ino
+
+```bash
+cd src/cluster
+python3 can_rpm.py
 
 
 
