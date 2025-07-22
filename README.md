@@ -1,4 +1,6 @@
 # 🚗 Team1 PiRacer Repository
+- **This repository is SEA:ME team1's repository.**
+- **member : [Kevin Choi](https://github.com/cmh0728) , [James Jang](https://github.com/jjangddung)**
 ## System architecture
  - **Raspberry pi 4b**
  - **Arduino uno**
