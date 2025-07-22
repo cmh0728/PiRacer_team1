@@ -15,6 +15,19 @@
   ‣ Connect CAN communication (Arduino ↔ Raspberry Pi)  
   ‣ Upgrade Ubuntu Server → Ubuntu 22.04 LTS Desktop
 
+
+- **21.07.25**  
+  ‣ CAN communication with Speed Sensor   
+
+- **22.07.25**  
+  ‣ Kernel update  for using DSI -> FAIL
+  ‣ reinstall Raspberry pi OS
+---
+
+## 📋 To do
+  ‣ Qt Design for Head Unit
+  ‣ Control with CPP 
+
 ---
 
 ## 🌐 Environment
