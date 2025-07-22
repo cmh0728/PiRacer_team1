@@ -1,6 +1,11 @@
-# 🚗 PiRacer Team1 Repository
+# 🚗 Team1 PiRacer Repository
+## System architecture
+ - **Raspberry pi 4b**
+ - **Arduino uno**
+ - **python venv**
+ - **Waveshare 7.9inch LCD-DSI**
 
-## 🛠️ Update Log
+## 🛠️ Log Update 
 
 - **15.07.25**  
   ‣ Assembly Pi-car
@@ -38,7 +43,7 @@
 
 ---
 
-## ▶️ How to Use
+## ▶️ DEMO
 
 ### ✅ Setting
 
