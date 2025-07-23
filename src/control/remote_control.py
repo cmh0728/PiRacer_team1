@@ -2,7 +2,8 @@
 from piracer.vehicles import PiRacerStandard
 from piracer.gamepads import ShanWanGamepad
 
-if __name__ == '__main__':
+
+def main():
     shanwan_gamepad = ShanWanGamepad()
     # piracer = PiRacerPro()
     piracer = PiRacerStandard()
@@ -22,3 +23,6 @@ if __name__ == '__main__':
 
         piracer.set_throttle_percent(throttle)
         piracer.set_steering_percent(steering)
+
+if __name__ == '__main__':
+    main()
