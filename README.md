@@ -1,5 +1,6 @@
 # 🚗 Team1 PiRacer Repository
 - **This repository is SEA:ME team1's repository.**
+- **Project : [SEA:ME - DES](https://github.com/SEA-ME/SEA-ME-course-book/tree/main/DistributedEmbeddedSystems)**
 - **member : [Kevin Choi](https://github.com/cmh0728) , [James Jang](https://github.com/jjangddung)**
 ## System architecture
  - **Raspberry pi 4b**
