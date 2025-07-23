@@ -63,8 +63,6 @@ sudo nano /boot/firmware/config.txt #paste to here
 cd PiRacer_team1
 python3 -m venv venv
 source venv/bin/activate
-pip install piracer-py
-pip install flask
 pip install -r requirements.txt
 ```
 ### Run code
