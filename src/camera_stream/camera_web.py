@@ -1,4 +1,3 @@
-# stream_server.py
 import subprocess
 import atexit
 import cv2, numpy as np
@@ -56,6 +55,7 @@ def video_feed():
     return Response(frame_generator(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 def main():
+    print("Start Camera stream. port : 8080")
     start_camera()
     app.run(host='0.0.0.0', port=8080, debug=False)
 

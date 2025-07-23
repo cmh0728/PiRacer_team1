@@ -4,6 +4,7 @@ from piracer.gamepads import ShanWanGamepad
 
 
 def main():
+    print("start remote control . press X to go ")
     shanwan_gamepad = ShanWanGamepad()
     # piracer = PiRacerPro()
     piracer = PiRacerStandard()
@@ -19,7 +20,7 @@ def main():
 
         steering = -gamepad_input.analog_stick_left.x
 
-        print(f'throttle={throttle}, steering={steering}')
+        #print(f'throttle={throttle}, steering={steering}')
 
         piracer.set_throttle_percent(throttle)
         piracer.set_steering_percent(steering)
