@@ -1,4 +1,73 @@
+# ----------------------
+# OS 잡파일 
+# ----------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+
+# ----------------------
+# Python
+# ----------------------
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+pip-wheel-metadata/
+.venv*/
+env/
+venv/
+
+# ----------------------
+# ROS2 / colcon
+# ----------------------
+build/
+install/
+log/
+# rosdep / vcs
+*.rosinstall
+*.repos
+
+# ----------------------
+# CMake / Qt / Autogen
+# ----------------------
+CMakeFiles/
+CMakeCache.txt
+cmake-build*/
+*_autogen/
+compile_commands.json
+Makefile
+cmake_install.cmake
+
+# Qt Creator / QBS / QMake user files
+*.user
+*.qbs.user
+*.pro.user
+*.autosave
+
+# Ninja
+.ninja_deps
+.ninja_log
+
+# ----------------------
+# IDE / Editor
+# ----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ----------------------
+# Project specific
+# ----------------------
 piracer/
 *.log
+
+# If you produce extra build dirs per platform, catch them:
+build-*/
+out-*/
