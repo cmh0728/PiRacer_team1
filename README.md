@@ -54,12 +54,18 @@
 If you want to run our code, you have to do this.
 
 ```bash
+# config file setting for Raspbery pi
+cd ~/PiRacer_team1/src/board
+nano config.txt # copy this file
+sudo nano /boot/firmware/config.txt #paste to here
+
+# to set pip install 
 cd PiRacer_team1
 python3 -m venv venv
 source venv/bin/activate
 pip install piracer-py
 pip install flask
-pip install requirements.txt 
+pip install -r requirements.txt
 ```
 ### Run code
 If you want to run our code, try this.
