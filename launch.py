@@ -1,8 +1,13 @@
 from multiprocessing import Process, set_start_method
-import signal, sys
+import signal, sys , os, subprocess
 
 import src.camera_stream.camera_web  as cam #camera streaming
 import src.control.remote_control as rm_control #remote control
+
+HEAD_U_PATH = os.path.join(os.path.dirname(__file__),"src","Head_U","build","Head_U")
+
+def run_head_u():
+    subprocess.run([HEAD_U_PATH],check=False)
 
 def shutdown(procs):
     for p in procs:
@@ -19,9 +24,11 @@ def main():
 
     p1 = Process(target=cam.main)
     p2 = Process(target=rm_control.main)
+    p3 = Process(target=run_head_u,name="head_u")
 
-    p1.start()
-    p2.start()
+    all_process = [p1,p2,p3]
+    for p in all_process: # all process start
+        p.start()
 
     # press Ctrl+C to shutdown program
     def handler(sig, frame):
@@ -32,8 +39,9 @@ def main():
     signal.signal(signal.SIGINT, handler) #catch Ctrl+c sign
     signal.signal(signal.SIGTERM, handler)
 
-    p1.join()
-    p2.join()
+    for p in all_process:
+        p.join()
+    
 
 if __name__ == "__main__":
     main()
