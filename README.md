@@ -7,6 +7,8 @@
  - **Arduino uno**
  - **python venv**
  - **Waveshare 7.9inch LCD-DSI**
+ - **Raspberry pi OS 64 bit**
+ - **Qt**
 
 ## 🛠️ Log Update 
 
@@ -46,15 +48,25 @@
 
 ---
 
-## ▶️ DEMO
+## ▶️ DEMO 
 
-### ✅ Setting
+### ✅ Software Setting
+If you want to run our code, you have to do this.
 
 ```bash
 cd PiRacer_team1
 python3 -m venv venv
 source venv/bin/activate
 pip install piracer-py
+pip install flask
+pip install requirements.txt 
+```
+### Run code
+If you want to run our code, try this.
+```bash
+cd PiRacer_team1
+source venv/bin/activate 
+python3 launch.py
 ```
 
 ### 🎮 Remote Control
