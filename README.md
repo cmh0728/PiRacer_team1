@@ -1,16 +1,120 @@
 # 🚗 Team1 PiRacer Repository
-- **This repository is SEA:ME team1's repository.**
-- **Project : [SEA:ME - DES](https://github.com/SEA-ME/SEA-ME-course-book/tree/main/DistributedEmbeddedSystems)**
-- **member : [Kevin Choi](https://github.com/cmh0728) , [James Jang](https://github.com/jjangddung)**
-## System architecture
- - **Raspberry pi 4b**
- - **Arduino uno**
- - **python venv**
- - **Waveshare 7.9inch LCD-DSI**
- - **Raspberry pi OS 64 bit**
- - **Qt**
+**This is SEA:ME Team1's repository.**
 
-## 🛠️ Log Update 
+**Project : <ins>[SEA:ME - DES](https://github.com/SEA-ME/SEA-ME-course-book/tree/main/DistributedEmbeddedSystems)</ins>**
+
+**member : <ins>[Kevin Choi](https://github.com/cmh0728)</ins> , <ins>[James Jang](https://github.com/jjangddung)</ins>**
+
+<!-- 목차 및 소개  -->
+# Distributed embedded systems
+This repository is the repository for the distributed embedded systems project of SEA:ME.
+
+If you would like to refer to the parent project, see <ins>[Distributed embedded systems](https://github.com/SEA-ME/SEA-ME-course-book/tree/main/DistributedEmbeddedSystems)</ins>
+
+- <ins>[PiRacer Assembly](#PiRacer-Assembly)</ins>
+- <ins>[Cluster](#cluster)</ins>
+- <ins>[Head Unit](#head-unit)</ins>
+
+<!-- piracer assembly부분 -->
+# PiRacer Assembly
+### Components
+-  <ins>[PiRacer AI kit](https://www.waveshare.com/wiki/PiRacer_AI_Kit)</ins>
+- Raspberry Pi 4B
+- SD 64GB
+
+### Assembly & Setting
+Please refer to the following official manual for quick assembly. 
+
+- <ins>[PiRacer Assembly manual](https://www.waveshare.com/wiki/PiRacer_Assembly_Manual)</ins>
+
+If you want to quickly set up and test the software, please refer to the following GitHub.
+
+- <ins>[software setting](https://github.com/twyleg/piracer_py)</ins>
+
+### 🖥️ Show Display Interface  
+- **V,I,P,IP_address**
+
+```bash
+cd display
+sudo nano install_display_service.sh
+```
+
+```bash
+******* CHANGE PATH *******
+```
+
+
+
+<!-- cluster 부분 -->
+# Cluster
+### Hardware components
+- **Raspberry Pi 4B**
+- **Arduino uno**
+- **Waveshare 7.9inch LCD-DSI**
+- **Speed sensor**
+- **Can shield & Can hat**
+
+### System architecture
+ - **Raspberry pi OS aarch64**
+ - **python venv**
+ - **python 3.10.x**
+ - **Qt 6.9.1**
+  - **python multiprocessing**
+
+
+## ▶️ DEMO 
+
+### ✅ Software Setting
+If you want to run our code, you have to try this.
+
+
+```bash
+# config file setting for Raspbery pi
+git clone https://github.com/cmh0728/PiRacer_team1.git
+cd ~/PiRacer_team1/src/board
+nano config.txt # copy this file
+sudo nano /boot/firmware/config.txt #paste to here
+
+# to set pip install 
+cd PiRacer_team1
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+### Run code 
+If you want to run our code, try this.
+```bash
+cd PiRacer_team1
+source venv/bin/activate 
+python3 launch.py
+```
+### 🎮 Remote Control
+
+- **Control steering**: Left stick  
+- **Throttle**: Press `A` → Move
+
+### camera stream check
+
+- connect to http::[your car ip address]:8080
+
+<!-- 이거 전선같은거로 바꾸기  -->
+### 🔧 CAN Communication Test
+
+```Arduino upload
+src/Arduino/can_speed.ino
+
+```bash
+cd src/cluster
+python3 can_rpm.py
+```
+
+
+<!-- Head unit 부분 -->
+## Head Unit
+
+<!-- 개발 로그 및 할 일들  -->
+---
+## 🛠️ Development Log Update 
 
 - **15.07.25**  
   ‣ Assembly Pi-car
@@ -34,75 +138,9 @@
   ‣ reinstall Raspberry pi OS
 ---
 
-## 📋 To do
+## 📋 Future To do
   ‣ Qt Design for Head Unit  
   ‣ Control with CPP 
 
 ---
-
-## 🌐 Environment
-
-- Ubuntu 22.04 LTS Desktop  
-- Raspberry Pi 4  
-- Arduino UNO  
-
----
-
-## ▶️ DEMO 
-
-### ✅ Software Setting
-If you want to run our code, you have to do this.
-
-```bash
-# config file setting for Raspbery pi
-cd ~/PiRacer_team1/src/board
-nano config.txt # copy this file
-sudo nano /boot/firmware/config.txt #paste to here
-
-# to set pip install 
-cd PiRacer_team1
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-### Run code
-If you want to run our code, try this.
-```bash
-cd PiRacer_team1
-source venv/bin/activate 
-python3 launch.py
-```
-
-### 🎮 Remote Control
-
-- **Control steering**: Left stick  
-- **Throttle**: Press `A` → Move
-
-```bash
-cd src/control  
-python3 remote_control.py
-```
-
-### 🖥️ Display Interface  
-- **V,I,P,IP_address**
-
-```bash
-cd display
-sudo nano install_display_service.sh
-```
-
-```bash
-******* CHANGE PATH *******
-```
-
-### 🔧 CAN Communication Test
-
-```Arduino upload
-src/Arduino/can_speed.ino
-
-```bash
-cd src/cluster
-python3 can_rpm.py
-
-
 
