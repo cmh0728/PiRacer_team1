@@ -98,7 +98,7 @@ python3 launch.py
 - connect to http::[your car ip address]:8080
 
 <!-- 이거 전선같은거로 바꾸기  -->
-### 🔧 CAN Communication Test
+### 🔗 CAN BUS Communication Test
 
 ```Arduino upload
 src/Arduino/can_speed.ino
@@ -111,9 +111,10 @@ python3 can_rpm.py
 
 <!-- Head unit 부분 -->
 ## Head Unit
+### update later
 
 <!-- 개발 로그 및 할 일들  -->
----
+
 ## 🛠️ Development Log Update 
 
 - **15.07.25**  
@@ -136,11 +137,11 @@ python3 can_rpm.py
 - **22.07.25**  
   ‣ Kernel update  for using DSI -> FAIL
   ‣ reinstall Raspberry pi OS
----
+
 
 ## 📋 Future To do
   ‣ Qt Design for Head Unit  
   ‣ Control with CPP 
 
----
+
 
