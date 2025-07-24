@@ -31,7 +31,7 @@ If you want to quickly set up and test the software, please refer to the followi
 
 - <ins>[software setting](https://github.com/twyleg/piracer_py)</ins>
 
-### 🖥️ Show Display Interface  
+### 🖥️ Show Interface  
 - **V,I,P,IP_address**
 
 ```bash
@@ -62,7 +62,7 @@ sudo nano install_display_service.sh
   - **python multiprocessing**
 
 
-## ▶️ DEMO 
+## DEMO 
 
 ### ✅ Software Setting
 If you want to run our code, you have to try this.
@@ -81,24 +81,23 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
-### Run code 
+## Run
 If you want to run our code, try this.
 ```bash
 cd PiRacer_team1
 source venv/bin/activate 
 python3 launch.py
 ```
-### 🎮 Remote Control
+## 🎮 Remote Control
 
 - **Control steering**: Left stick  
 - **Throttle**: Press `A` → Move
 
-### camera stream check
+## 📽️camera stream check
 
 - connect to http::[your car ip address]:8080
 
-<!-- 이거 전선같은거로 바꾸기  -->
-### 🔗 CAN BUS Communication Test
+## 🔗 CAN BUS Communication Test
 
 ```Arduino upload
 src/Arduino/can_speed.ino
@@ -107,6 +106,39 @@ src/Arduino/can_speed.ino
 cd src/cluster
 python3 can_rpm.py
 ```
+
+## To automize CAN setting 
+```bash
+#create new service file
+sudo nano /etc/systemd/system/can0.service 
+```
+```bash
+#paste this file 
+[Unit]
+Description=Setup CAN interface can0
+Wants=network.target
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/ip link set can0 up type can bitrate 500000 restart-ms 100
+ExecStop=/sbin/ip link set can0 down
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+```bash
+# save file & activate
+sudo systemctl daemon-reload
+sudo systemctl enable can0.service
+```
+```bash
+# reboot and check 
+sudo reboot
+candump can0
+```
+
 
 
 <!-- Head unit 부분 -->
