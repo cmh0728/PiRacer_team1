@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file>Main.qml</file>
+    <!-- 나중에 컴포넌트나 이미지도 추가 -->
+  </qresource>
+</RCC>
