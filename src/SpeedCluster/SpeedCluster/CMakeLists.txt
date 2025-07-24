@@ -10,7 +10,7 @@ if(COMMAND qt_standard_project_setup)
 endif()
 
 # ----------------- Resources -----------------
-qt6_add_resources(GENERATED_RESOURCES images.qrc)
+# qt6_add_resources(GENERATED_RESOURCES images.qrc)
 
 # ----------------- Target -----------------
 qt_add_executable(Head_U
@@ -19,7 +19,7 @@ qt_add_executable(Head_U
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
-    ${GENERATED_RESOURCES}
+    # ${GENERATED_RESOURCES}
 )
 
 target_link_libraries(Head_U
