@@ -20,8 +20,6 @@ qt_add_executable(Head_U
     mainwindow.h
     mainwindow.ui
     ${GENERATED_RESOURCES}
-    rpm_calculate.h
-    rpm_calculate.cpp
 )
 
 target_link_libraries(Head_U
