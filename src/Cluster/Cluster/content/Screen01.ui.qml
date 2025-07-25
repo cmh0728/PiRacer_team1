@@ -20,7 +20,7 @@ Rectangle {
     color: "#000000"
 
     Image {
-        id: image
+        id: speed_guage
         x: 335
         y: 8
         width: 610
@@ -30,7 +30,7 @@ Rectangle {
     }
 
     Image {
-        id: image1
+        id: rpm_guage
         x: 42
         y: 13
         width: 597
@@ -39,7 +39,7 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
 
         Text {
-            id: text1
+            id: speed
             x: 560
             y: 172
             width: 81
@@ -52,7 +52,7 @@ Rectangle {
         }
 
         Text {
-            id: text2
+            id: rpm
             x: 258
             y: 172
             width: 81
@@ -65,7 +65,7 @@ Rectangle {
         }
 
         Text {
-            id: text3
+            id: battery_100
             x: 881
             y: 16
             width: 81
@@ -78,7 +78,7 @@ Rectangle {
         }
 
         Text {
-            id: text4
+            id: battery_0
             x: 881
             y: 336
             width: 81
@@ -91,7 +91,7 @@ Rectangle {
         }
 
         Text {
-            id: text5
+            id: speed_0
             x: 383
             y: 253
             width: 81
@@ -104,7 +104,7 @@ Rectangle {
         }
 
         Text {
-            id: text6
+            id: speed_5
             x: 383
             y: 149
             width: 81
@@ -117,7 +117,7 @@ Rectangle {
         }
 
         Text {
-            id: text7
+            id: speed_10
             x: 441
             y: 62
             width: 81
@@ -130,7 +130,7 @@ Rectangle {
         }
 
         Text {
-            id: text8
+            id: speed_25
             x: 733
             y: 149
             width: 81
@@ -143,7 +143,7 @@ Rectangle {
         }
 
         Text {
-            id: text9
+            id: speed_30
             x: 733
             y: 253
             width: 81
@@ -156,7 +156,7 @@ Rectangle {
         }
 
         Text {
-            id: text10
+            id: speed_20
             x: 678
             y: 62
             width: 81
@@ -201,10 +201,41 @@ Rectangle {
                 }
             ]
         }
+
+        Image {
+            id: car_img
+            x: 431
+            y: 157
+            width: 339
+            height: 327
+            source: "../images/bg-mask.png"
+            fillMode: Image.PreserveAspectFit
+
+            Image {
+                id: car_highlight
+                x: 11
+                y: 10
+                width: 318
+                height: 309
+                source: "../images/car-highlights.png"
+                fillMode: Image.PreserveAspectFit
+
+                Text {
+                    id: text1
+                    x: 74
+                    y: 90
+                    width: 171
+                    height: 54
+                    color: "#f7f0f0"
+                    text: qsTr("Gearsetting")
+                    font.pixelSize: 12
+                }
+            }
+        }
     }
 
     Image {
-        id: image2
+        id: battery_guage
         x: 645
         y: 13
         width: 597
@@ -213,7 +244,7 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
 
         Image {
-            id: image3
+            id: battery
             x: 272
             y: 172
             width: 81
@@ -241,7 +272,7 @@ Rectangle {
     }
 
     Text {
-        id: text11
+        id: speed_15
         x: 600
         y: 28
         width: 81
@@ -254,7 +285,7 @@ Rectangle {
     }
 
     Text {
-        id: text12
+        id: rpm_0
         x: 254
         y: 344
         width: 81
@@ -267,7 +298,7 @@ Rectangle {
     }
 
     Text {
-        id: text13
+        id: rpm_250
         x: 182
         y: 280
         width: 81
@@ -280,7 +311,7 @@ Rectangle {
     }
 
     Text {
-        id: text14
+        id: rpm_500
         x: 145
         y: 191
         width: 81
@@ -293,7 +324,7 @@ Rectangle {
     }
 
     Text {
-        id: text15
+        id: rpm_750
         x: 182
         y: 93
         width: 81
@@ -306,7 +337,7 @@ Rectangle {
     }
 
     Text {
-        id: text16
+        id: rpm_1000
         x: 254
         y: 37
         width: 81
