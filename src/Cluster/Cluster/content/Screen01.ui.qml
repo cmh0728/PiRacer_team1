@@ -1,5 +1,4 @@
 
-
 /*
 This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
 It is supposed to be strictly declarative and only uses a subset of QML. If you edit
@@ -13,6 +12,9 @@ import QtQuick.Layouts
 
 Rectangle {
     id: rectangle
+    property real rpmValue: 0
+    property real speedValue: 0
+    property real batteryValue: 0
     width: Constants.width
     height: Constants.height
     color: "#000000"
@@ -165,6 +167,40 @@ Rectangle {
             horizontalAlignment: Text.AlignHCenter
             clip: true
         }
+
+        Image {
+            id: rpm_needle
+            x: 201
+            y: 0
+            width: 96
+            height: 126
+            source: "../images/red-border-right.png"
+            fillMode: Image.PreserveAspectFit
+            transform: [
+                Rotation {
+                    origin.x: rpm_needle.width / 2
+                    origin.y: rpm_needle.height
+                    angle: rectangle.rpmValue * 0.18 // <- 회전 각도 연결
+                }
+            ]
+        }
+
+        Image {
+            id: speed_needle
+            x: 506
+            y: 0
+            width: 96
+            height: 126
+            source: "../images/red-border-right.png"
+            fillMode: Image.PreserveAspectFit
+            transform: [
+                Rotation {
+                    angle: rectangle.speedValue * 6
+                    origin.y: speed_needle.height
+                    origin.x: speed_needle.width / 2
+                }
+            ]
+        }
     }
 
     Image {
@@ -184,6 +220,23 @@ Rectangle {
             height: 35
             source: "../images/battery.png"
             fillMode: Image.PreserveAspectFit
+        }
+
+        Image {
+            id: battery_needle
+            x: 310
+            y: 0
+            width: 96
+            height: 126
+            source: "../images/red-border-left.png"
+            fillMode: Image.PreserveAspectFit
+            transform: [
+                Rotation {
+                    angle: rectangle.batteryValue * 1.8 //0~100 -> 0~180도
+                    origin.y: battery_needle.height
+                    origin.x: battery_needle.width / 2
+                }
+            ]
         }
     }
 
@@ -264,20 +317,4 @@ Rectangle {
         horizontalAlignment: Text.AlignHCenter
         clip: true
     }
-
-    AnimatedImage {
-        id: animatedImage
-        x: 295
-        y: 37
-        width: 40
-        height: 132
-        source: "../images/red-border-right.png"
-    }
-
-    states: [
-        State {
-            name: "clicked"
-            when: button.checked
-        }
-    ]
 }
