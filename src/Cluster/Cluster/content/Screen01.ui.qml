@@ -183,6 +183,36 @@ Rectangle {
                     angle: rectangle.rpmValue * 0.18 // <- 회전 각도 연결
                 }
             ]
+
+            Image {
+                id: rpm_hl
+                x: 18
+                y: -43
+                width: 156
+                height: 137
+                source: "../images/highlight-standard-sport.png"
+                fillMode: Image.PreserveAspectFit
+            }
+
+            Image {
+                id: speed_hl
+                x: 320
+                y: -38
+                width: 156
+                height: 137
+                source: "../images/highlight-standard-sport.png"
+                fillMode: Image.PreserveAspectFit
+            }
+
+            Image {
+                id: battery_hl
+                x: 623
+                y: -48
+                width: 156
+                height: 137
+                source: "../images/highlight-standard-sport.png"
+                fillMode: Image.PreserveAspectFit
+            }
         }
 
         Image {
