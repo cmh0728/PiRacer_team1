@@ -206,7 +206,7 @@ Rectangle {
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
-                    angle: rectangle.speedValue * 6
+                    angle: rectangle.speedValue * 6 - 95
                     origin.x: 95
                     origin.y: 190
                 }
@@ -285,7 +285,7 @@ Rectangle {
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
-                    angle: rectangle.batteryValue * 1.8 //0~100 -> 0~180도
+                    angle: rectangle.batteryValue * 1.8 - 20 //0~100 -> 0~180도
                     origin.x: 1
                     origin.y: 183
                 }
