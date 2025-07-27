@@ -170,7 +170,7 @@ Rectangle {
 
         Image {
             id: rpm_needle
-            x: 201
+            x: 203
             y: 0
             width: 96
             height: 126
@@ -178,8 +178,8 @@ Rectangle {
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
-                    origin.x: rpm_needle.width / 2
-                    origin.y: rpm_needle.height
+                    origin.x: 96 //rpm_center 기반의 계산
+                    origin.y: 190
                     angle: rectangle.rpmValue * 0.18 // <- 회전 각도 연결
                 }
             ]
@@ -188,26 +188,6 @@ Rectangle {
                 id: rpm_hl
                 x: 18
                 y: -43
-                width: 156
-                height: 137
-                source: "../images/highlight-standard-sport.png"
-                fillMode: Image.PreserveAspectFit
-            }
-
-            Image {
-                id: speed_hl
-                x: 320
-                y: -38
-                width: 156
-                height: 137
-                source: "../images/highlight-standard-sport.png"
-                fillMode: Image.PreserveAspectFit
-            }
-
-            Image {
-                id: battery_hl
-                x: 623
-                y: -48
                 width: 156
                 height: 137
                 source: "../images/highlight-standard-sport.png"
@@ -226,10 +206,20 @@ Rectangle {
             transform: [
                 Rotation {
                     angle: rectangle.speedValue * 6
-                    origin.y: speed_needle.height
-                    origin.x: speed_needle.width / 2
+                    origin.y: 190
+                    origin.x: 95
                 }
             ]
+
+            Image {
+                id: speed_hl
+                x: 14
+                y: -41
+                width: 156
+                height: 137
+                source: "../images/highlight-standard-sport.png"
+                fillMode: Image.PreserveAspectFit
+            }
         }
 
         Image {
@@ -257,10 +247,21 @@ Rectangle {
                     width: 171
                     height: 54
                     color: "#f7f0f0"
-                    text: qsTr("Gearsetting")
-                    font.pixelSize: 12
+                    text: qsTr("D N R P")
+                    font.pixelSize: 25
+                    horizontalAlignment: Text.AlignHCenter
                 }
             }
+        }
+
+        Image {
+            id: speed_center
+            x: 551
+            y: 140
+            width: 100
+            height: 100
+            source: "qrc:/qtquickplugin/images/template_image.png"
+            fillMode: Image.PreserveAspectFit
         }
     }
 
@@ -285,8 +286,8 @@ Rectangle {
 
         Image {
             id: battery_needle
-            x: 310
-            y: 0
+            x: 308
+            y: 8
             width: 96
             height: 126
             source: "../images/red-border-left.png"
@@ -294,10 +295,20 @@ Rectangle {
             transform: [
                 Rotation {
                     angle: rectangle.batteryValue * 1.8 //0~100 -> 0~180도
-                    origin.y: battery_needle.height
-                    origin.x: battery_needle.width / 2
+                    origin.x: 1
+                    origin.y: 183
                 }
             ]
+
+            Image {
+                id: battery_hl
+                x: -88
+                y: -50
+                width: 156
+                height: 137
+                source: "../images/highlight-standard-sport.png"
+                fillMode: Image.PreserveAspectFit
+            }
         }
     }
 
