@@ -180,14 +180,15 @@ Rectangle {
                 Rotation {
                     origin.x: 96 //rpm_center 기반의 계산
                     origin.y: 190
-                    angle: rectangle.rpmValue * 0.18 // <- 회전 각도 연결
+                    //angle: rectangle.rpmValue * 0.18 + 17
+                    angle: rectangle.rpmValue * 0.18 - 142 // <- 회전 각도 연결
                 }
             ]
 
             Image {
                 id: rpm_hl
-                x: 18
-                y: -43
+                x: 16
+                y: -44
                 width: 156
                 height: 137
                 source: "../images/highlight-standard-sport.png"
@@ -206,8 +207,8 @@ Rectangle {
             transform: [
                 Rotation {
                     angle: rectangle.speedValue * 6
-                    origin.y: 190
                     origin.x: 95
+                    origin.y: 190
                 }
             ]
 
@@ -252,16 +253,6 @@ Rectangle {
                     horizontalAlignment: Text.AlignHCenter
                 }
             }
-        }
-
-        Image {
-            id: speed_center
-            x: 551
-            y: 140
-            width: 100
-            height: 100
-            source: "qrc:/qtquickplugin/images/template_image.png"
-            fillMode: Image.PreserveAspectFit
         }
     }
 
