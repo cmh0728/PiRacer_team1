@@ -1,6 +1,10 @@
-Module Cluster
-singleton Constants 1.0 Constants.qml
-EventListSimulator 1.0 EventListSimulator.qml
-EventListModel 1.0 EventListModel.qml
+module Cluster
+GearDisplay 1.0 GearDisplay.ui.qml
+GearState 1.0 GearState.qml
+KeyboardController 1.0 KeyboardController.qml
+Constants 1.0 Constants.qml
 DirectoryFontLoader 1.0 DirectoryFontLoader.qml
+EventListModel 1.0 EventListModel.qml
+EventListSimulator 1.0 EventListSimulator.qml
+plugin designer/plugin.metainfo
 

@@ -19,6 +19,21 @@ Rectangle {
     height: Constants.height
     color: "#000000"
 
+    GearState { id: gearState }
+
+    KeyboardController {
+        gearState: gearState
+        focus: true
+        anchors.fill: parent
+    }
+
+    GearDisplay {
+        gearState: gearState
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: 20
+    }
+
     Image {
         id: speed_guage
         x: 335
