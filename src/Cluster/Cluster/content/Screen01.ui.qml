@@ -367,6 +367,17 @@ Rectangle {
 
             // source: "qrc:/images/battery.png"
             fillMode: Image.PreserveAspectFit
+            Rectangle {
+                id: battery_fill
+                width: parent.width * 0.4 * 0.9
+                height: parent.height * (rectangle.batteryValue / 100) * 0.8
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                color: "lime"
+                radius: 2
+                z: -1 // 배터리 이미지보다 뒤에 그리려면 필요 없을 수도 있음
+                opacity: 0.8
+            }
         }
 
         Image {
@@ -381,8 +392,8 @@ Rectangle {
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
-                    angle: rectangle.batteryValue * 1.8 - 20 //0~100 -> 0~180도
-                    origin.x: -1
+                    angle: -1 * rectangle.batteryValue * 1.8 + 160 //0~100 -> 0~180도
+                    origin.x: 0
                     origin.y: 193
                 }
             ]
@@ -390,7 +401,7 @@ Rectangle {
 
         Image {
             id: battery_hl
-            x: 221
+            x: 222
             y: -45
             width: 156
             height: 137
@@ -400,11 +411,11 @@ Rectangle {
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
-                    origin.x: 294 - 221
+                    origin.x: 294 - 221 + 3
                     // battery_needle.x - battery_hl.x + battery_needle.origin.x
                     origin.y: -1 - (-45)
                               + 190 // battery_needle.y - battery_hl.y + battery_needle.origin.y
-                    angle: rectangle.batteryValue * 1.8 - 1
+                    angle: -1 * rectangle.batteryValue * 1.8 - 181
                 }
             ]
         }
