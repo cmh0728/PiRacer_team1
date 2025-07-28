@@ -43,26 +43,27 @@ Rectangle {
         Text {
             id: speed
             x: 560
-            y: 172
+            y: 209
             width: 81
             height: 35
             color: "#b7b2b2"
             text: "cm/s"
-            font.pixelSize: 26
+            font.pixelSize: 16
             horizontalAlignment: Text.AlignHCenter
             clip: true
         }
 
         Text {
             id: rpm
-            x: 258
-            y: 172
+            x: 242
+            y: 173
             width: 81
             height: 35
             color: "#b7b2b2"
-            text: "rpm "
+            text: "RPM"
             font.pixelSize: 26
             horizontalAlignment: Text.AlignHCenter
+            font.bold: true
             clip: true
         }
 
@@ -222,7 +223,7 @@ Rectangle {
                 Rotation {
                     origin.x: 90 // speed_center의 x + width / 2
                     origin.y: 215 // speed_center의 y + height / 2
-                    angle: rectangle.speedValue * 6 - 88 // speedValue에 따른 회전 각도 계산
+                    angle: rectangle.speedValue * 7 - 88 // speedValue에 따른 회전 각도 계산
                 }
             ]
         }
@@ -240,7 +241,7 @@ Rectangle {
                 Rotation {
                     origin.x: 74
                     origin.y: 255
-                    angle: rectangle.speedValue * 6 - 108
+                    angle: rectangle.speedValue * 7 - 108
                 }
             ]
         }
@@ -287,6 +288,21 @@ Rectangle {
                 }
             }
         }
+
+        Text {
+            id: speed_display
+            x: 515
+            y: 140
+            width: 171
+            height: 54
+            color: "#f7f0f0"
+            font.pixelSize: 45
+            horizontalAlignment: Text.AlignHCenter
+            font.bold: true
+            text: rectangle.speedValue.toFixed(0)
+
+            // 소수점 없이 정수로 출력
+        }
     }
 
     Image {
@@ -302,10 +318,10 @@ Rectangle {
 
         Image {
             id: battery
-            x: 258
-            y: 172
-            width: 81
-            height: 35
+            x: 272
+            y: 173
+            width: 53
+            height: 34
             source: "../images/battery.png"
 
             // source: "qrc:/images/battery.png"
