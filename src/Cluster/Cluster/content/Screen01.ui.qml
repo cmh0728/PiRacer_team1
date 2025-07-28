@@ -25,7 +25,8 @@ Rectangle {
         y: 8
         width: 610
         height: 446
-        source: "../images/gauge-gauge-frame-sport-center.png"
+        // source: "../images/gauge-gauge-frame-sport-center.png"
+        source: "qrc:/images/gauge-gauge-frame-sport-center.png"
         fillMode: Image.PreserveAspectFit
     }
 
@@ -35,7 +36,8 @@ Rectangle {
         y: 13
         width: 597
         height: 379
-        source: "../images/gauge-gauge-frame-sport-side.png"
+        // source: "../images/gauge-gauge-frame-sport-side.png"
+        source: "qrc:/images/gauge-gauge-frame-sport-side.png"
         fillMode: Image.PreserveAspectFit
 
         Text {
@@ -174,7 +176,8 @@ Rectangle {
             y: 0
             width: 96
             height: 126
-            source: "../images/red-border-right.png"
+            // source: "../images/red-border-right.png"
+            source: "qrc:/images/red-border-right.png"
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
@@ -192,7 +195,9 @@ Rectangle {
             y: -45
             width: 156
             height: 137
-            source: "../images/highlight-standard-sport.png"
+            // source: "../images/highlight-standard-sport.png"
+            source: "qrc:/images/highlight-standard-sport.png"
+
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
@@ -209,7 +214,9 @@ Rectangle {
             y: 0
             width: 96
             height: 126
-            source: "../images/red-border-right.png"
+            // source: "../images/red-border-right.png"
+            source: "qrc:/images/red-border-right.png"
+
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
@@ -225,7 +232,9 @@ Rectangle {
             y: -40
             width: 156
             height: 137
-            source: "../images/highlight-standard-sport.png"
+            // source: "../images/highlight-standard-sport.png"
+            source: "qrc:/images/highlight-standard-sport.png"
+
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
@@ -242,7 +251,9 @@ Rectangle {
             y: 157
             width: 339
             height: 327
-            source: "../images/bg-mask.png"
+            // source: "../images/bg-mask.png"
+            source: "qrc:/images/bg-mask.png"
+
             fillMode: Image.PreserveAspectFit
 
             Image {
@@ -251,7 +262,9 @@ Rectangle {
                 y: 10
                 width: 318
                 height: 309
-                source: "../images/car-highlights.png"
+                // source: "../images/car-highlights.png"
+                source: "qrc:/images/car-highlights.png"
+
                 fillMode: Image.PreserveAspectFit
 
                 Text {
@@ -275,7 +288,9 @@ Rectangle {
         y: 13
         width: 597
         height: 379
-        source: "../images/gauge-gauge-frame-sport-side 복사본.png"
+        // source: "../images/gauge-gauge-frame-sport-side-copy.png"
+        source: "qrc:/images/gauge-gauge-frame-sport-side-copy.png"
+
         fillMode: Image.PreserveAspectFit
 
         Image {
@@ -284,7 +299,9 @@ Rectangle {
             y: 172
             width: 81
             height: 35
-            source: "../images/battery.png"
+            // source: "../images/battery.png"
+            source: "qrc:/images/battery.png"
+
             fillMode: Image.PreserveAspectFit
         }
 
@@ -294,7 +311,9 @@ Rectangle {
             y: -1
             width: 96
             height: 126
-            source: "../images/red-border-left.png"
+            // source: "../images/red-border-left.png"
+            source: "qrc:/images/red-border-left.png"
+
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
@@ -311,7 +330,9 @@ Rectangle {
             y: -45
             width: 156
             height: 137
-            source: "../images/highlight-standard-sport.png"
+            // source: "../images/highlight-standard-sport.png"
+            source: "qrc:/images/highlight-standard-sport.png"
+
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {

@@ -16,18 +16,20 @@ if (Qt6_VERSION VERSION_LESS 6.2.0)
 message(FATAL_ERROR "You need Qt 6.2.0 or newer to build the application.")
 endif()
 
-qt_add_executable(${CMAKE_PROJECT_NAME} src/main.cpp)
+#실행파일
+qt_add_executable(${CMAKE_PROJECT_NAME} 
+    src/main.cpp
+)
 
 # qt_standard_project_setup() requires Qt 6.3 or higher. See https://doc.qt.io/qt-6/qt-standard-project-setup.html for details.
 if (${QT_VERSION_MINOR} GREATER_EQUAL 3)
 qt6_standard_project_setup()
 endif()
 
-qt_add_resources(${CMAKE_PROJECT_NAME} "configuration"
-    PREFIX "/"
-    FILES
-        qtquickcontrols2.conf
-)
+# qt6_add_resources(${PROJECT_NAME} qml.qrc)
+qt6_add_resources(qml_resources qml.qrc)
+target_sources(${PROJECT_NAME} PRIVATE ${qml_resources})
+
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Core

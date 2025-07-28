@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>content/App.qml</file>
+        <file>content/Screen01.ui.qml</file>
+        <file>imports/Cluster/Constants.qml</file>
+        <file>imports/Cluster/EventListModel.qml</file>
+        <file>imports/Cluster/EventListSimulator.qml</file>
+        <file>imports/Cluster/DirectoryFontLoader.qml</file>
+        <file>images/battery.png</file>
+        <file>images/bg-mask.png</file>
+        <file>images/car-highlights.png</file>
+        <file>images/gauge-gauge-frame-sport-center.png</file>
+        <file>images/gauge-gauge-frame-sport-side.png</file>
+        <file>images/gauge-gauge-frame-sport-side-copy.png</file>
+        <file>images/highlight-standard-sport.png</file>
+        <file>images/red-border-left.png</file>
+        <file>images/red-border-right.png</file>
+        <file>qtquickcontrols2.conf</file>
+    </qresource>
+</RCC>
