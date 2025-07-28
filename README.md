@@ -47,6 +47,7 @@ sudo nano install_display_service.sh
 
 <!-- cluster 부분 -->
 # Cluster
+<img width="1276" height="397" alt="Image" src="https://github.com/user-attachments/assets/7978a139-d85e-47fb-96e7-0c468c9e55b5" />
 ### Hardware components
 - **Raspberry Pi 4B**
 - **Arduino uno**
@@ -172,7 +173,8 @@ candump can0
 
 
 ## 📋 Future To do
-  ‣ Qt Design for Head Unit  
+  ‣ Qt Design for Cluster
+
   ‣ Control with CPP 
 
 
