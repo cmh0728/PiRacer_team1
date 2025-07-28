@@ -25,8 +25,8 @@ Rectangle {
         y: 8
         width: 610
         height: 446
-        // source: "../images/gauge-gauge-frame-sport-center.png"
-        source: "qrc:/images/gauge-gauge-frame-sport-center.png"
+        source: "../images/gauge-gauge-frame-sport-center.png"
+        // source: "qrc:/images/gauge-gauge-frame-sport-center.png"
         fillMode: Image.PreserveAspectFit
     }
 
@@ -36,8 +36,8 @@ Rectangle {
         y: 13
         width: 597
         height: 379
-        // source: "../images/gauge-gauge-frame-sport-side.png"
-        source: "qrc:/images/gauge-gauge-frame-sport-side.png"
+        source: "../images/gauge-gauge-frame-sport-side.png"
+        // source: "qrc:/images/gauge-gauge-frame-sport-side.png"
         fillMode: Image.PreserveAspectFit
 
         Text {
@@ -176,15 +176,15 @@ Rectangle {
             y: 0
             width: 96
             height: 126
-            // source: "../images/red-border-right.png"
-            source: "qrc:/images/red-border-right.png"
+            source: "../images/red-border-right.png"
+            // source: "qrc:/images/red-border-right.png"
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
                     origin.x: 96 //rpm_center 기반의 계산
                     origin.y: 190
                     //angle: rectangle.rpmValue * 0.18 + 17
-                    angle: rectangle.rpmValue * 0.18 - 142 // <- 회전 각도 연결
+                    angle: rectangle.rpmValue * 0.15 - 142 // <- 회전 각도 연결
                 }
             ]
         }
@@ -195,15 +195,15 @@ Rectangle {
             y: -45
             width: 156
             height: 137
-            // source: "../images/highlight-standard-sport.png"
-            source: "qrc:/images/highlight-standard-sport.png"
+            source: "../images/highlight-standard-sport.png"
 
+            // source: "qrc:/images/highlight-standard-sport.png"
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
                     origin.x: 78 // = rpm_center.x + 50 - rpm_hl.x
                     origin.y: 235 // = rpm_center.y + 50 - rpm_hl.y
-                    angle: rectangle.rpmValue * 0.18 - 162
+                    angle: rectangle.rpmValue * 0.15 - 162
                 }
             ]
         }
@@ -214,9 +214,9 @@ Rectangle {
             y: 0
             width: 96
             height: 126
-            // source: "../images/red-border-right.png"
-            source: "qrc:/images/red-border-right.png"
+            source: "../images/red-border-right.png"
 
+            // source: "qrc:/images/red-border-right.png"
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
@@ -232,9 +232,9 @@ Rectangle {
             y: -40
             width: 156
             height: 137
-            // source: "../images/highlight-standard-sport.png"
-            source: "qrc:/images/highlight-standard-sport.png"
+            source: "../images/highlight-standard-sport.png"
 
+            // source: "qrc:/images/highlight-standard-sport.png"
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
@@ -251,9 +251,9 @@ Rectangle {
             y: 157
             width: 339
             height: 327
-            // source: "../images/bg-mask.png"
-            source: "qrc:/images/bg-mask.png"
+            source: "../images/bg-mask.png"
 
+            // source: "qrc:/images/bg-mask.png"
             fillMode: Image.PreserveAspectFit
 
             Image {
@@ -262,21 +262,28 @@ Rectangle {
                 y: 10
                 width: 318
                 height: 309
-                // source: "../images/car-highlights.png"
-                source: "qrc:/images/car-highlights.png"
+                source: "../images/car-highlights.png"
 
+                // source: "qrc:/images/car-highlights.png"
                 fillMode: Image.PreserveAspectFit
 
                 Text {
-                    id: text1
+                    id: drive_mode
                     x: 74
-                    y: 90
+                    y: 105
                     width: 171
                     height: 54
-                    color: "#f7f0f0"
-                    text: qsTr("D N R P")
-                    font.pixelSize: 25
+                    color: "#f7f5f5"
+                    text: rectangle.rpmValue
+                          === 0 ? "P" : rectangle.speedValue
+                                  < 0 ? "R" : rectangle.speedValue === 0 ? "N" : "D"
+                    font.pixelSize: 32
                     horizontalAlignment: Text.AlignHCenter
+                    font.bold: true
+                    //                    if rpmValue == 0       → "P"
+                    //                    else if speedValue < 0 → "R"
+                    //                    else if speedValue == 0 → "N"
+                    //                    else                   → "D"
                 }
             }
         }
@@ -288,9 +295,9 @@ Rectangle {
         y: 13
         width: 597
         height: 379
-        // source: "../images/gauge-gauge-frame-sport-side-copy.png"
-        source: "qrc:/images/gauge-gauge-frame-sport-side-copy.png"
+        source: "../images/gauge-gauge-frame-sport-side-copy.png"
 
+        // source: "qrc:/images/gauge-gauge-frame-sport-side-copy.png"
         fillMode: Image.PreserveAspectFit
 
         Image {
@@ -299,9 +306,9 @@ Rectangle {
             y: 172
             width: 81
             height: 35
-            // source: "../images/battery.png"
-            source: "qrc:/images/battery.png"
+            source: "../images/battery.png"
 
+            // source: "qrc:/images/battery.png"
             fillMode: Image.PreserveAspectFit
         }
 
@@ -311,9 +318,9 @@ Rectangle {
             y: -1
             width: 96
             height: 126
-            // source: "../images/red-border-left.png"
-            source: "qrc:/images/red-border-left.png"
+            source: "../images/red-border-left.png"
 
+            // source: "qrc:/images/red-border-left.png"
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
@@ -330,9 +337,9 @@ Rectangle {
             y: -45
             width: 156
             height: 137
-            // source: "../images/highlight-standard-sport.png"
-            source: "qrc:/images/highlight-standard-sport.png"
+            source: "../images/highlight-standard-sport.png"
 
+            // source: "qrc:/images/highlight-standard-sport.png"
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
