@@ -269,15 +269,14 @@ Rectangle {
                 fillMode: Image.PreserveAspectFit
 
                 Text {
-                    id: drive_mode
-                    x: 74
+                    id: drive_mode_P
+                    x: 54
                     y: 105
-                    width: 171
-                    height: 54
-                    color: "#f7f5f5"
-                    text: rectangle.rpmValue
-                          === 0 ? "P" : rectangle.speedValue
-                                  < 0 ? "R" : rectangle.speedValue === 0 ? "N" : "D"
+                    width: 47
+                    height: 41
+                    color: rectangle.rpmValue === 0
+                           && rectangle.speedValue === 0 ? "#ffffff" : "#7f7f7f"
+                    text: "P"
                     font.pixelSize: 32
                     horizontalAlignment: Text.AlignHCenter
                     font.bold: true
@@ -285,6 +284,48 @@ Rectangle {
                     //                    else if speedValue < 0 → "R"
                     //                    else if speedValue == 0 → "N"
                     //                    else                   → "D"
+                }
+
+                Text {
+                    id: drive_mode_D
+                    x: 107
+                    y: 105
+                    width: 47
+                    height: 41
+                    color: rectangle.rpmValue > 0
+                           && rectangle.speedValue > 0 ? "#ffffff" : "#7f7f7f"
+                    text: "D"
+                    font.pixelSize: 32
+                    horizontalAlignment: Text.AlignHCenter
+                    font.bold: true
+                }
+
+                Text {
+                    id: drive_mode_N
+                    x: 160
+                    y: 105
+                    width: 47
+                    height: 41
+                    color: rectangle.rpmValue > 0
+                           && rectangle.speedValue === 0 ? "#ffffff" : "#7f7f7f"
+                    text: "N"
+                    font.pixelSize: 32
+                    horizontalAlignment: Text.AlignHCenter
+                    font.bold: true
+                }
+
+                Text {
+                    id: drive_mode_R
+                    x: 213
+                    y: 105
+                    width: 47
+                    height: 41
+                    color: rectangle.rpmValue > 0
+                           && rectangle.speedValue < 0 ? "#ffffff" : "#7f7f7f"
+                    text: "R"
+                    font.pixelSize: 32
+                    horizontalAlignment: Text.AlignHCenter
+                    font.bold: true
                 }
             }
         }
