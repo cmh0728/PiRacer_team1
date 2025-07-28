@@ -66,8 +66,8 @@ Rectangle {
 
         Text {
             id: battery_100
-            x: 881
-            y: 16
+            x: 865
+            y: 18
             width: 81
             height: 35
             color: "#b7b2b2"
@@ -79,7 +79,7 @@ Rectangle {
 
         Text {
             id: battery_0
-            x: 881
+            x: 865
             y: 336
             width: 81
             height: 35
@@ -184,21 +184,28 @@ Rectangle {
                     angle: rectangle.rpmValue * 0.18 - 142 // <- 회전 각도 연결
                 }
             ]
+        }
 
-            Image {
-                id: rpm_hl
-                x: 16
-                y: -44
-                width: 156
-                height: 137
-                source: "../images/highlight-standard-sport.png"
-                fillMode: Image.PreserveAspectFit
-            }
+        Image {
+            id: rpm_hl
+            x: 221
+            y: -45
+            width: 156
+            height: 137
+            source: "../images/highlight-standard-sport.png"
+            fillMode: Image.PreserveAspectFit
+            transform: [
+                Rotation {
+                    origin.x: 78 // = rpm_center.x + 50 - rpm_hl.x
+                    origin.y: 235 // = rpm_center.y + 50 - rpm_hl.y
+                    angle: rectangle.rpmValue * 0.18 - 162
+                }
+            ]
         }
 
         Image {
             id: speed_needle
-            x: 506
+            x: 507
             y: 0
             width: 96
             height: 126
@@ -206,21 +213,27 @@ Rectangle {
             fillMode: Image.PreserveAspectFit
             transform: [
                 Rotation {
-                    angle: rectangle.speedValue * 6 - 95
-                    origin.x: 95
-                    origin.y: 190
+                    origin.x: 90 // speed_center의 x + width / 2
+                    origin.y: 215 // speed_center의 y + height / 2
+                    angle: rectangle.speedValue * 6 - 88 // speedValue에 따른 회전 각도 계산
                 }
             ]
-
-            Image {
-                id: speed_hl
-                x: 14
-                y: -41
-                width: 156
-                height: 137
-                source: "../images/highlight-standard-sport.png"
-                fillMode: Image.PreserveAspectFit
-            }
+        }
+        Image {
+            id: speed_hl
+            x: 523
+            y: -40
+            width: 156
+            height: 137
+            source: "../images/highlight-standard-sport.png"
+            fillMode: Image.PreserveAspectFit
+            transform: [
+                Rotation {
+                    origin.x: 74
+                    origin.y: 255
+                    angle: rectangle.speedValue * 6 - 108
+                }
+            ]
         }
 
         Image {
@@ -267,7 +280,7 @@ Rectangle {
 
         Image {
             id: battery
-            x: 272
+            x: 258
             y: 172
             width: 81
             height: 35
@@ -277,8 +290,8 @@ Rectangle {
 
         Image {
             id: battery_needle
-            x: 308
-            y: 8
+            x: 294
+            y: -1
             width: 96
             height: 126
             source: "../images/red-border-left.png"
@@ -286,20 +299,29 @@ Rectangle {
             transform: [
                 Rotation {
                     angle: rectangle.batteryValue * 1.8 - 20 //0~100 -> 0~180도
-                    origin.x: 1
-                    origin.y: 183
+                    origin.x: -1
+                    origin.y: 193
                 }
             ]
+        }
 
-            Image {
-                id: battery_hl
-                x: -88
-                y: -50
-                width: 156
-                height: 137
-                source: "../images/highlight-standard-sport.png"
-                fillMode: Image.PreserveAspectFit
-            }
+        Image {
+            id: battery_hl
+            x: 221
+            y: -45
+            width: 156
+            height: 137
+            source: "../images/highlight-standard-sport.png"
+            fillMode: Image.PreserveAspectFit
+            transform: [
+                Rotation {
+                    origin.x: 294 - 221
+                    // battery_needle.x - battery_hl.x + battery_needle.origin.x
+                    origin.y: -1 - (-45)
+                              + 190 // battery_needle.y - battery_hl.y + battery_needle.origin.y
+                    angle: rectangle.batteryValue * 1.8 - 1
+                }
+            ]
         }
     }
 
