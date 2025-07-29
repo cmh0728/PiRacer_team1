@@ -19,6 +19,7 @@ endif()
 #실행파일
 qt_add_executable(${CMAKE_PROJECT_NAME} 
     src/main.cpp
+    src/CanReceiver.cpp
 )
 
 # qt_standard_project_setup() requires Qt 6.3 or higher. See https://doc.qt.io/qt-6/qt-standard-project-setup.html for details.
