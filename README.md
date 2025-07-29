@@ -51,6 +51,8 @@ sudo nano install_display_service.sh
 # Cluster
 <img width="1276" height="397" alt="Image" src="https://github.com/user-attachments/assets/7978a139-d85e-47fb-96e7-0c468c9e55b5" />
 
+##
+
 <img width="1276" height="1016" alt="Image" src="https://github.com/user-attachments/assets/cab1a7c0-655e-4ef5-b601-cc5cbc3ee628" />
 
 ### Hardware components
