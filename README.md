@@ -17,6 +17,8 @@ If you would like to refer to the parent project, see <ins>[Distributed embedded
 
 <!-- piracer assembly부분 -->
 # PiRacer Assembly
+<img width="217" height="207" alt="Image" src="https://github.com/user-attachments/assets/cf2de512-cef8-4854-9131-12cbc5d92a64" />
+
 ### Components
 -  <ins>[PiRacer AI kit](https://www.waveshare.com/wiki/PiRacer_AI_Kit)</ins>
 - Raspberry Pi 4B
@@ -48,6 +50,8 @@ sudo nano install_display_service.sh
 <!-- cluster 부분 -->
 # Cluster
 <img width="1276" height="397" alt="Image" src="https://github.com/user-attachments/assets/7978a139-d85e-47fb-96e7-0c468c9e55b5" />
+
+<img width="2103" height="2135" alt="Image" src="https://github.com/user-attachments/assets/674c3f6b-4e9c-49fd-906d-d98ffd5894d7" />
 
 ### Hardware components
 - **Raspberry Pi 4B**
