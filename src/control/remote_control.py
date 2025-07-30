@@ -1,20 +1,29 @@
 #from piracer.vehicles import PiRacerPro
 from piracer.vehicles import PiRacerStandard
 from piracer.gamepads import ShanWanGamepad
+import time 
 
 
 def main():
-    print("start remote control . press X to go ")
+    print("start remote control . press A to forward, Y to reverse")
     shanwan_gamepad = ShanWanGamepad()
     # piracer = PiRacerPro()
     piracer = PiRacerStandard()
 
     while True:
         gamepad_input = shanwan_gamepad.read_data()
-
+        if gamepad_input is None:
+            time.sleep(0.01)
+            continue
         
         try:
-            throttle = (gamepad_input.button_y or 0) * 0.5 # y-> a
+            if gamepad_input.button_y or 0: #a button
+                throttle = +0.5
+            elif gamepad_input.button_a or 3: #  y button
+                throttle = -0.5
+            else : 
+                throttle = 0.0
+            # throttle = (gamepad_input.button_y or 0) * 0.5 # y-> a
         except AttributeError:
             throttle = 0
 
