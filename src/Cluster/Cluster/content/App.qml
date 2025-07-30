@@ -27,6 +27,22 @@ Window {
         easing.type: Easing.InOutQuad
     }
 
+    Connections {
+        target: canReceiver
+        function onRpmChanged() {
+            console.log("🚀 rpmChanged: ", canReceiver.rpm)
+            rpmAnim.to = canReceiver.rpm
+            rpmAnim.restart()
+        }
+    }
+
+    onRpmSmoothChanged: console.log("📈 rpmSmooth updated to", rpmSmooth)
+
+    Component.onCompleted: {
+        console.log("🚦 App started. Initial RPM:", canReceiver.rpm)
+        rpmSmooth = canReceiver.rpm
+    }
+
 
     // battery
     SequentialAnimation {
