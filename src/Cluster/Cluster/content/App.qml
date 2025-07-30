@@ -20,21 +20,13 @@ Window {
         speedValue: canReceiver.speed
         batteryValue: 0
     }
-    // RPM 
+    // RPM 애니메이션
     NumberAnimation on rpmSmooth {
         id: rpmAnim
-        duration: 300    // 애니메이션 지속 시간 (ms)
+        duration: 300
         easing.type: Easing.InOutQuad
     }
 
-    // interpolate of rpm data
-    Connections {
-        target: canReceiver
-        function onRpmChanged() {
-            rpmAnim.to = canReceiver.rpm
-            rpmAnim.restart()
-        }
-    }
 
     // battery
     SequentialAnimation {

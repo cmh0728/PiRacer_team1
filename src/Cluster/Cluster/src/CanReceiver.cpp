@@ -30,9 +30,17 @@ void CanReceiver::readCan() {
     if (nbytes > 0) {
         if (frame.can_id == 0x100 && frame.can_dlc >= 2) {
             int value = (frame.data[0] << 8) | frame.data[1];
-            m_rpm = value; //RPM
-            emit rpmChanged();
+            // m_rpm = value; //RPM
+            // emit rpmChanged();
+            setRpm(value);
         }
         
+    }
+}
+
+void CanReceiver::setRpm(int value) {
+    if (m_rpm != value) {
+        m_rpm = value;
+        emit rpmChanged(); 
     }
 }
