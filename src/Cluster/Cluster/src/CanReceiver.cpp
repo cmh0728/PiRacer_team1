@@ -48,9 +48,21 @@ void CanReceiver::readCan() {
             // m_rpm = value; //RPM
             // emit rpmChanged();
             setRpm(value);
+
+            //speed
+            qreal circumference = M_PI * WHEEL_DIAM_CM;        // cm
+            qreal cm_per_min   = value * circumference;        // cm/min
+            qreal cm_per_sec   = cm_per_min / 60.0;            // cm/s
+            int   speed_cm_s   = int(std::lround(cm_per_sec)); // 정수로 반올림
+
+            if (speed_cm_s != m_speed) {
+                m_speed = speed_cm_s;
+                emit speedChanged();
+            }
         }
         
     }
+
 }
 
 void CanReceiver::readBattery()

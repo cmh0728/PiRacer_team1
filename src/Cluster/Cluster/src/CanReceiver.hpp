@@ -58,6 +58,7 @@ private:
 
     static constexpr qreal MIN_VOLTAGE = 3.0;
     static constexpr qreal MAX_VOLTAGE = 4.2;
+    static constexpr qreal WHEEL_DIAM_CM = 6.8;
 };
 
 #endif // CANRECEIVER_HPP
