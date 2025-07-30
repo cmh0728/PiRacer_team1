@@ -30,19 +30,10 @@ Window {
     Connections {
         target: canReceiver
         function onRpmChanged() {
-            console.log("🚀 rpmChanged: ", canReceiver.rpm)
-            rpmAnim.to = canReceiver.rpm
-            rpmAnim.restart()
+            console.log("🔄 RPM Changed:", canReceiver.rpm)
+            rpmSmooth = canReceiver.rpm   // 직접 값을 할당해 → Behavior가 애니메이션 처리
         }
     }
-
-    onRpmSmoothChanged: console.log("📈 rpmSmooth updated to", rpmSmooth)
-
-    Component.onCompleted: {
-        console.log("🚦 App started. Initial RPM:", canReceiver.rpm)
-        rpmSmooth = canReceiver.rpm
-    }
-
 
     // battery
     SequentialAnimation {
