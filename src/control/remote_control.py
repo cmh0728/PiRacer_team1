@@ -20,7 +20,7 @@ def main():
 
         steering = -gamepad_input.analog_stick_left.x
 
-        #print(f'throttle={throttle}, steering={steering}')
+        # print(f'throttle={throttle}, steering={steering}')
 
         piracer.set_throttle_percent(throttle)
         piracer.set_steering_percent(steering)
