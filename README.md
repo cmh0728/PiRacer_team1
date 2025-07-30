@@ -19,6 +19,9 @@ If you would like to refer to the parent project, see <ins>[Distributed embedded
 # PiRacer Assembly
 <img width="1276" height="1218" alt="Image" src="https://github.com/user-attachments/assets/f34aab97-945f-4665-9ab7-21c01cdb7119" />
 
+### System Architecture
+<img width="761" height="504" alt="Image" src="https://github.com/user-attachments/assets/642350d7-2cb5-4ff1-9345-c6043824acd4" />
+
 ### Components
 -  <ins>[PiRacer AI kit](https://www.waveshare.com/wiki/PiRacer_AI_Kit)</ins>
 - Raspberry Pi 4B
