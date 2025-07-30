@@ -5,7 +5,7 @@ import time
 
 
 def main():
-    print("start remote control . press A to forward, Y to reverse")
+    print("start remote control . press A to forward, X  to reverse")
     shanwan_gamepad = ShanWanGamepad()
     # piracer = PiRacerPro()
     piracer = PiRacerStandard()
@@ -17,9 +17,9 @@ def main():
             continue
         
         try:
-            if gamepad_input.button_y or 0: #a button
+            if gamepad_input.button_y : #a button
                 throttle = +0.5
-            elif gamepad_input.button_a or 3: #  y button
+            elif gamepad_input.button_a : #  y button
                 throttle = -0.5
             else : 
                 throttle = 0.0
