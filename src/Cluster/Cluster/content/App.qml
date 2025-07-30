@@ -14,7 +14,7 @@ Window {
 
     //Screen01 binding
     Screen01 {
-        id: root
+        id: mainScreen
         color: "#000000"
         // rpmValue: canReceiver.rpm
         rpmValue: rpmSmooth
@@ -24,7 +24,7 @@ Window {
     // RPM 
     NumberAnimation {
         id: rpmAnim
-        target: root
+        target: mainScreen
         property: "rpmSmooth"
         duration: 300
         easing.type: Easing.InOutQuad
