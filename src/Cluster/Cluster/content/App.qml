@@ -14,7 +14,7 @@ Window {
 
     //Screen01 binding
     Screen01 {
-        id: mainScreen
+        id: root
         color: "#000000"
         // rpmValue: canReceiver.rpm
         rpmValue: rpmSmooth
