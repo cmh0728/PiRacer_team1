@@ -1,4 +1,4 @@
-# 🚗 Team1 PiRacer Repository
+# 🚗 SEA:ME-DES Team1 
 **This is SEA:ME Team1's repository.**
 
 **Project : <ins>[SEA:ME - DES](https://github.com/SEA-ME/SEA-ME-course-book/tree/main/DistributedEmbeddedSystems)</ins>**
@@ -98,9 +98,12 @@ python3 launch.py
 ```
 ## 🎮 Remote Control
 
-- **Control steering**: Left stick  
-- **Throttle**: Press `A` → Move
+- **Steering** : Left joystick  
+- **Throttle** : 
 
+      Press `A` ->  move front
+    
+      Press `X` ->  move rear
 ## 📽️camera stream check
 
 - connect to http::[your car ip address]:8080
