@@ -16,7 +16,6 @@ Window {
     //Screen01 binding
     Screen01 {
         id: mainScreen
-        anchors.fill: parent
         color: "#000000"
         // rpmValue: canReceiver.rpm
         rpmValue: rpmSmooth
