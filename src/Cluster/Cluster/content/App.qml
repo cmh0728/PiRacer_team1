@@ -12,6 +12,7 @@ Window {
 
     property real rpmSmooth: 0  
 
+    //Screen01 binding
     Screen01 {
         id: mainScreen
         color: "#000000"
@@ -20,9 +21,11 @@ Window {
         speedValue: canReceiver.speed
         batteryValue: 0
     }
-    // RPM 애니메이션
-    NumberAnimation on rpmSmooth {
+    // RPM 
+    NumberAnimation {
         id: rpmAnim
+        target: root
+        property: "rpmSmooth"
         duration: 300
         easing.type: Easing.InOutQuad
     }
@@ -30,8 +33,9 @@ Window {
     Connections {
         target: canReceiver
         function onRpmChanged() {
-            console.log("🔄 RPM Changed:", canReceiver.rpm)
+            // console.log("🔄 RPM Changed:", canReceiver.rpm)
             rpmSmooth = canReceiver.rpm   // 직접 값을 할당해 → Behavior가 애니메이션 처리
+            rpmAnim.restart()
         }
     }
 
