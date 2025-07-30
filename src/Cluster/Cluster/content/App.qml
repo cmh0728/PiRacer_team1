@@ -5,6 +5,7 @@ import QtQuick 6.4
 import Cluster
 
 Window {
+    id : root
     width: mainScreen.width
     height: mainScreen.height
     visible: true
@@ -15,6 +16,7 @@ Window {
     //Screen01 binding
     Screen01 {
         id: mainScreen
+        anchors.fill: parent
         color: "#000000"
         // rpmValue: canReceiver.rpm
         rpmValue: rpmSmooth
@@ -24,7 +26,7 @@ Window {
     // RPM 
     NumberAnimation {
         id: rpmAnim
-        target: mainScreen
+        target: root
         property: "rpmSmooth"
         duration: 300
         easing.type: Easing.InOutQuad
