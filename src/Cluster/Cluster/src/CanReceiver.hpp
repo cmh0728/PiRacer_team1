@@ -1,3 +1,6 @@
+#ifndef CANRECEIVER_HPP
+#define CANRECEIVER_HPP
+
 #include <net/if.h>
 #include <sys/ioctl.h> 
 #include <QObject>
@@ -10,10 +13,16 @@
 #include <cstring>  
 #include <cstdio> 
 
+// i2c battery 
+#include <linux/i2c-dev.h>
+#include <sys/ioctl.h>
+
 class CanReceiver : public QObject {
     Q_OBJECT
     Q_PROPERTY(int rpm READ rpm NOTIFY rpmChanged)
     Q_PROPERTY(int speed READ speed NOTIFY speedChanged)
+    Q_PROPERTY(int batteryPercent  READ batteryPercent NOTIFY batteryChanged)
+
 
 
 public:
@@ -22,18 +31,33 @@ public:
     int rpm() const { return m_rpm; }
     int speed() const { return m_speed; }
     void setRpm(int value);
-    
+    int batteryPercent() const { return m_batteryPercent; }
+
+
 signals:
 
     void rpmChanged();
     void speedChanged();
+    void batteryChanged();
 
 private slots:
     void readCan();
+    void readBattery();
 
 private:
     int m_socket;
     int m_rpm = 0;
     int m_speed = 0;
     QTimer *m_timer;
+
+    //for battery 
+    qreal m_batteryVoltage    = 0.0;
+    int   m_batteryPercent    = 0;
+    QTimer* m_battTimer       = nullptr;
+    int m_i2c_fd;
+
+    static constexpr qreal MIN_VOLTAGE = 3.0;
+    static constexpr qreal MAX_VOLTAGE = 4.2;
 };
+
+#endif // CANRECEIVER_HPP

@@ -1,4 +1,7 @@
 #include "CanReceiver.hpp"
+#include <fcntl.h>
+#include <unistd.h>
+#include <cmath>
 
 CanReceiver::CanReceiver(QObject *parent) : QObject(parent) {
     struct ifreq ifr {};
@@ -18,9 +21,21 @@ CanReceiver::CanReceiver(QObject *parent) : QObject(parent) {
 
     bind(m_socket, (struct sockaddr *)&addr, sizeof(addr));
 
+    //battery socket
+    const char* i2cDev = "/dev/i2c-1";
+    m_i2c_fd = ::open(i2cDev, O_RDWR);
+    if (m_i2c_fd < 0 || ioctl(m_i2c_fd, I2C_SLAVE, 0x41) < 0) {
+        perror("I2C open/addr");
+    }
+
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &CanReceiver::readCan);
     m_timer->start(10); // 100 Hz
+
+    // timer for battery. per 3s
+    m_battTimer = new QTimer(this);
+    connect(m_battTimer, &QTimer::timeout, this, &CanReceiver::readBattery);
+    m_battTimer->start(3000); //3000ms
 }
 
 void CanReceiver::readCan() {
@@ -35,6 +50,29 @@ void CanReceiver::readCan() {
             setRpm(value);
         }
         
+    }
+}
+
+void CanReceiver::readBattery()
+{
+    // 버스 전압 레지스터(0x02) 읽기
+    uint8_t reg = 0x02;
+    if (::write(m_i2c_fd, &reg, 1) != 1) return;
+
+    uint8_t buf[2] = {0};
+    if (::read(m_i2c_fd, buf, 2) != 2) return;
+
+    int16_t raw = (buf[0] << 8) | buf[1];
+    // 상위 12비트 ▶ 전압(LSB=4mV)
+    qreal voltage = (raw >> 3) * 0.004;
+
+    // 3.0-4.2V → 0-100%
+    qreal pct = (voltage - MIN_VOLTAGE) / (MAX_VOLTAGE - MIN_VOLTAGE) * 100.0;
+    int   percent = std::lround(qBound<qreal>(0.0, pct, 100.0));
+
+    if (percent != m_batteryPercent) {
+        m_batteryPercent = percent;
+        emit batteryChanged();
     }
 }
 

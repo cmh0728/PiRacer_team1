@@ -20,7 +20,7 @@ Window {
         // rpmValue: canReceiver.rpm
         rpmValue: rpmSmooth
         speedValue: canReceiver.speed
-        batteryValue: 0
+        batteryValue: canReceiver.batteryPercent  
     }
     // RPM 
     NumberAnimation {
@@ -34,18 +34,11 @@ Window {
     Connections {
         target: canReceiver
         function onRpmChanged() {
-            // console.log("🔄 RPM Changed:", canReceiver.rpm)
-            rpmSmooth = canReceiver.rpm   // 직접 값을 할당해 → Behavior가 애니메이션 처리
+            // console.log("🔄 RPM Changed:", canReceiver.rpm) //debugging
+            rpmSmooth = canReceiver.rpm   
             rpmAnim.restart()
         }
     }
 
-    // battery
-    SequentialAnimation {
-        running: true
-        loops: Animation.Infinite
-        NumberAnimation { target: mainScreen; property: "batteryValue"; from: 0; to: 100; duration: 5000; easing.type: Easing.InOutQuad }
-        NumberAnimation { target: mainScreen; property: "batteryValue"; from: 100; to: 0; duration: 5000; easing.type: Easing.InOutQuad }
-    }
 }
 
