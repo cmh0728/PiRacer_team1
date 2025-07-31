@@ -15,7 +15,7 @@ Rectangle {
     property real rpmValue: 0
     property real speedValue: 0
     property real batteryValue: 0
-    property int  gearValue: 3
+    property int gearValue: 3
     width: Constants.width
     height: Constants.height
     color: "#000000"
@@ -114,7 +114,7 @@ Rectangle {
             width: 81
             height: 35
             color: "#b7b2b2"
-            text: "5"
+            text: "20"
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             clip: true
@@ -127,7 +127,7 @@ Rectangle {
             width: 81
             height: 35
             color: "#b7b2b2"
-            text: "10"
+            text: "40"
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             clip: true
@@ -140,7 +140,7 @@ Rectangle {
             width: 81
             height: 35
             color: "#b7b2b2"
-            text: "25"
+            text: "100"
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             clip: true
@@ -153,7 +153,7 @@ Rectangle {
             width: 81
             height: 35
             color: "#b7b2b2"
-            text: "30"
+            text: "120"
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             clip: true
@@ -166,7 +166,7 @@ Rectangle {
             width: 81
             height: 35
             color: "#b7b2b2"
-            text: "20"
+            text: "80"
             font.pixelSize: 20
             horizontalAlignment: Text.AlignHCenter
             clip: true
@@ -186,7 +186,7 @@ Rectangle {
                     origin.x: 96 //rpm_center 기반의 계산
                     origin.y: 190
                     //angle: rectangle.rpmValue * 0.18 + 17
-                    angle: rectangle.rpmValue * 0.15 - 142 // <- 회전 각도 연결
+                    angle: rectangle.rpmValue * 0.15 * 0.5 - 142 // <- 회전 각도 연결
                 }
             ]
         }
@@ -205,7 +205,7 @@ Rectangle {
                 Rotation {
                     origin.x: 78 // = rpm_center.x + 50 - rpm_hl.x
                     origin.y: 235 // = rpm_center.y + 50 - rpm_hl.y
-                    angle: rectangle.rpmValue * 0.15 - 162
+                    angle: rectangle.rpmValue * 0.15 * 0.5 - 162
                 }
             ]
         }
@@ -224,7 +224,7 @@ Rectangle {
                 Rotation {
                     origin.x: 90 // speed_center의 x + width / 2
                     origin.y: 215 // speed_center의 y + height / 2
-                    angle: rectangle.speedValue * 7 - 88 // speedValue에 따른 회전 각도 계산
+                    angle: rectangle.speedValue * 7 * 0.25 - 88 // speedValue에 따른 회전 각도 계산
                 }
             ]
         }
@@ -242,7 +242,7 @@ Rectangle {
                 Rotation {
                     origin.x: 74
                     origin.y: 255
-                    angle: rectangle.speedValue * 7 - 108
+                    angle: rectangle.speedValue * 7 * 0.25 - 108
                 }
             ]
         }
@@ -421,7 +421,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "15"
+        text: "60"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
@@ -447,7 +447,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "250"
+        text: "500"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
@@ -460,7 +460,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "500"
+        text: "1000"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
@@ -473,7 +473,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "750"
+        text: "1500"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
@@ -486,7 +486,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "1000"
+        text: "2000"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
