@@ -60,7 +60,14 @@ void CanReceiver::readCan() {
                 emit speedChanged();
             }
         }
-        
+        else if (frame.can_id == 0x101 && frame.can_dlc >= 1) {
+            int newGear = frame.data[0];
+            if (newGear != m_gear) {
+                m_gear = newGear;
+                emit gearChanged();
+            }
+        }
+
     }
 
 }
@@ -91,6 +98,8 @@ void CanReceiver::readBattery()
 void CanReceiver::setRpm(int value) {
     if (m_rpm != value) {
         m_rpm = value;
-        emit rpmChanged(); 
+        emit rpmChanged();
     }
 }
+
+int CanReceiver::gear() const { return m_gear; }

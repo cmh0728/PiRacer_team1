@@ -280,10 +280,6 @@ Rectangle {
                     font.pixelSize: 32
                     horizontalAlignment: Text.AlignHCenter
                     font.bold: true
-                    //                    if rpmValue == 0       → "P"
-                    //                    else if speedValue < 0 → "R"
-                    //                    else if speedValue == 0 → "N"
-                    //                    else                   → "D"
                 }
 
                 Text {

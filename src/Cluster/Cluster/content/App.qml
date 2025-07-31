@@ -20,7 +20,8 @@ Window {
         // rpmValue: canReceiver.rpm
         rpmValue: rpmSmooth
         speedValue: canReceiver.speed
-        batteryValue: canReceiver.batteryPercent  
+        batteryValue: canReceiver.batteryPercent 
+        gearValue: canReceiver.gear 
     }
     // RPM 
     NumberAnimation {

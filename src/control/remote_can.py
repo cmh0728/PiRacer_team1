@@ -10,8 +10,8 @@ GEAR_PARKING = 0x03
 
 def main():
     print("""
-            Start remote control. 
-            A : move front 
+            Start remote control.
+            A : move front
             X : move rear
             Y : parking
             """)
@@ -29,7 +29,7 @@ def main():
             time.sleep(0.01)
             continue
 
-        try : 
+        try :
             # gear setting , have to checki joystick mapping
             if input.button_y:
                 throttle = +0.5
@@ -39,7 +39,7 @@ def main():
                 gear     = GEAR_REVERSE # R
             elif input.button_x:
                 print("PDC is on working")
-                throttle = 0.0 
+                throttle = 0.0
                 gear = GEAR_PARKING # P will be edit later ( in pdc project )
 
             else:
@@ -49,7 +49,7 @@ def main():
         except AttributeError:
             throttle = 0
 
-        # stearing 
+        # stearing
         steering = -input.analog_stick_left.x
 
         # control
