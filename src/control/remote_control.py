@@ -17,9 +17,9 @@ def main():
             continue
         
         try:
-            if gamepad_input.button_y or 0: #a button
+            if gamepad_input.button_y : #a button
                 throttle = +0.5
-            elif gamepad_input.button_a or 3: #  x button
+            elif gamepad_input.button_a : #  x button
                 throttle = -0.5
             else : 
                 throttle = 0.0
