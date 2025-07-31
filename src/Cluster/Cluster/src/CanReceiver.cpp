@@ -76,22 +76,20 @@ void CanReceiver::readCan() {
 
 void CanReceiver::readBattery() // I2C read  0x41
 {
-    // 버스 전압 레지스터(0x02) 읽기
     uint8_t reg = 0x02;
     if (::write(m_i2c_fd, &reg, 1) != 1) return;
 
     uint8_t buf[2] = {0};
     if (::read(m_i2c_fd, buf, 2) != 2) return;
 
-    // 1) Word 단위로 LSB/​MSB 스왑
-    uint16_t word  = (uint16_t(buf[0]) << 8) | uint16_t(buf[1]);
-    uint16_t raw16 = (word >> 8) | (word << 8);
+    // 1) MSB(상위바이트)=buf[0], LSB=buf[1]
+    uint16_t raw16 = (uint16_t(buf[0]) << 8) | uint16_t(buf[1]);
 
-    // 2) 상위 12비트 추출
+    // 2) 상위 12비트 추출 (LSB 3비트는 비어있음)
     int16_t raw12  = raw16 >> 3;
 
-    // 3) 실제 전압 계산 (LSB = 4 mV)
-    qreal voltage = raw12 * 0.004;
+    // 3) 전압 계산 (LSB = 4 mV)
+    qreal voltage = raw12 * 0.004;  // V
 
     // 4) 디버그 (필요시 활성화)
     qDebug()
@@ -99,9 +97,10 @@ void CanReceiver::readBattery() // I2C read  0x41
         << ("raw16=0x" + QString::number(raw16, 16).toUpper())
         << QString("voltage=%1V").arg(voltage);
 
-    // 5) 3셀 배터리 9.0–12.6 V → 0–100%
-    qreal pct = (voltage - 9.0) / (12.6 - 9.0) * 100.0;
-    int   percent = std::lround(qBound<qreal>(0.0, pct, 100.0));
+    // 5) 3셀 범위(9.0–12.6 V) → 0–100%
+    static constexpr qreal MIN_V = 9.0, MAX_V = 12.6;
+    qreal pct = (voltage - MIN_V)/(MAX_V - MIN_V)*100.0;
+    int percent = std::lround(qBound<qreal>(0, pct, 100));
 
     if (percent != m_batteryPercent) {
         m_batteryPercent = percent;
