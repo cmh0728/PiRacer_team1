@@ -191,4 +191,10 @@ candump can0
   ‣ Control with CPP 
 
 
+## check the battery voltage
+``` 
+#bash
+sudo apt install i2c-tools
+i2cget -y 1 0x41 0x02 w
+```
 

@@ -61,8 +61,8 @@ private:
     QTimer* m_battTimer       = nullptr;
     int m_i2c_fd;
 
-    static constexpr qreal MIN_VOLTAGE = 3.0;
-    static constexpr qreal MAX_VOLTAGE = 4.2;
+    static constexpr qreal MIN_VOLTAGE = 9.0;
+    static constexpr qreal MAX_VOLTAGE = 12.6;
     static constexpr qreal WHEEL_DIAM_CM = 6.8;
 
     // for gear status

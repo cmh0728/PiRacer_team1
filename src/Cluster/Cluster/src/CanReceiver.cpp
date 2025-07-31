@@ -72,7 +72,7 @@ void CanReceiver::readCan() {
 
 }
 
-void CanReceiver::readBattery()
+void CanReceiver::readBattery() // I2C read  0x41
 {
     // 버스 전압 레지스터(0x02) 읽기
     uint8_t reg = 0x02;
@@ -81,12 +81,22 @@ void CanReceiver::readBattery()
     uint8_t buf[2] = {0};
     if (::read(m_i2c_fd, buf, 2) != 2) return;
 
-    int16_t raw = (buf[0] << 8) | buf[1];
-    // 상위 12비트 ▶ 전압(LSB=4mV)
-    qreal voltage = (raw >> 3) * 0.004;
+    // 1) Word 단위로 LSB/​MSB 스왑
+    uint16_t word  = (uint16_t(buf[0]) << 8) | uint16_t(buf[1]);
+    uint16_t raw16 = (word >> 8) | (word << 8);
 
-    // 3.0-4.2V → 0-100%
-    qreal pct = (voltage - MIN_VOLTAGE) / (MAX_VOLTAGE - MIN_VOLTAGE) * 100.0;
+    // 2) 상위 12비트 추출
+    int16_t raw12  = raw16 >> 3;
+
+    // 3) 실제 전압 계산 (LSB = 4 mV)
+    qreal voltage = raw12 * 0.004;
+
+    // 4) 디버그 (필요시 활성화)
+    qDebug() << "[INA219]" << "raw16=0x" << hex << raw16
+             << "voltage=" << voltage << "V";
+
+    // 5) 3셀 배터리 9.0–12.6 V → 0–100%
+    qreal pct = (voltage - 9.0) / (12.6 - 9.0) * 100.0;
     int   percent = std::lround(qBound<qreal>(0.0, pct, 100.0));
 
     if (percent != m_batteryPercent) {
@@ -94,6 +104,7 @@ void CanReceiver::readBattery()
         emit batteryChanged();
     }
 }
+
 
 void CanReceiver::setRpm(int value) {
     if (m_rpm != value) {
