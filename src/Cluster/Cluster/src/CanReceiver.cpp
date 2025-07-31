@@ -2,6 +2,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <cmath>
+#include <QDebug>   
+
 
 CanReceiver::CanReceiver(QObject *parent) : QObject(parent) {
     struct ifreq ifr {};
