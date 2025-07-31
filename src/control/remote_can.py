@@ -28,23 +28,25 @@ def main():
             time.sleep(0.01)
             continue
 
-        # gear setting , have to checki joystick mapping
-        if input.button_y:
-            throttle = +0.5
-            gear     = GEAR_DRIVE # D
-        elif input.button_a:
-            throttle = -0.5
-            gear     = GEAR_REVERSE # R
-        elif input.button_x:
-            print("PDC is on working")
-            throttle = 0.0 
-            gear = GEAR_PARKING # P will be edit later ( in pdc project )
+        try : 
+            # gear setting , have to checki joystick mapping
+            if input.button_y:
+                throttle = +0.5
+                gear     = GEAR_DRIVE # D
+            elif input.button_a:
+                throttle = -0.5
+                gear     = GEAR_REVERSE # R
+            elif input.button_x:
+                print("PDC is on working")
+                throttle = 0.0 
+                gear = GEAR_PARKING # P will be edit later ( in pdc project )
 
-        else:
-            throttle = 0.0
-            gear     = GEAR_NEUTRAL # N
+            else:
+                throttle = 0.0
+                gear     = GEAR_NEUTRAL # N
 
-        
+        except AttributeError:
+            throttle = 0
 
         # stearing 
         steering = -input.analog_stick_left.x
