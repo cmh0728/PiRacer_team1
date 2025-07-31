@@ -2,7 +2,8 @@ from multiprocessing import Process, set_start_method
 import signal, sys , os, subprocess
 
 import src.camera_stream.camera_web  as cam #camera streaming
-import src.control.remote_control as rm_control #remote control
+# import src.control.remote_control as rm_control #remote control
+import src.control.remote_can as rm_control #remote control
 
 CLUSTER_PATH = os.path.join(os.path.dirname(__file__),"src","Cluster","Cluster","build","ClusterApp")
 
