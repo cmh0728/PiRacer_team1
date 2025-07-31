@@ -23,19 +23,19 @@ def main():
     car     = PiRacerStandard()
 
     while True:
-        inp = gamepad.read_data()
+        input = gamepad.read_data()
         if inp is None:
             time.sleep(0.01)
             continue
 
         # gear setting , have to checki joystick mapping
-        if inp.button_a:
+        if input.button_a:
             throttle = +0.5
             gear     = GEAR_DRIVE # D
-        elif inp.button_y:
+        elif input.button_y:
             throttle = -0.5
             gear     = GEAR_REVERSE # R
-        elif inp.button_x:
+        elif input.button_x:
             print("PDC is on working")
             throttle = 0.0 
             gear = GEAR_PARKING # P will be edit later ( in pdc project )
@@ -47,7 +47,7 @@ def main():
         
 
         # stearing 
-        steering = -inp.analog_stick_left.x
+        steering = -input.analog_stick_left.x
 
         # control
         car.set_throttle_percent(throttle)
