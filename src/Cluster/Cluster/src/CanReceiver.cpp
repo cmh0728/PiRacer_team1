@@ -94,8 +94,10 @@ void CanReceiver::readBattery() // I2C read  0x41
     qreal voltage = raw12 * 0.004;
 
     // 4) 디버그 (필요시 활성화)
-    qDebug() << "[INA219]" << "raw16=0x" << hex << raw16
-             << "voltage=" << voltage << "V";
+    qDebug()
+        << "[INA219]"
+        << ("raw16=0x" + QString::number(raw16, 16).toUpper())
+        << QString("voltage=%1V").arg(voltage);
 
     // 5) 3셀 배터리 9.0–12.6 V → 0–100%
     qreal pct = (voltage - 9.0) / (12.6 - 9.0) * 100.0;
