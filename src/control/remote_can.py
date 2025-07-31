@@ -17,22 +17,22 @@ def main():
             """)
 
     # CAN
-    bus = can.interface.Bus(channel='can0', bustype='socketcan')
+    bus = can.interface.Bus(channel='can0', interface='socketcan')
 
     gamepad = ShanWanGamepad()
     car     = PiRacerStandard()
 
     while True:
         input = gamepad.read_data()
-        if inp is None:
+        if input is None:
             time.sleep(0.01)
             continue
 
         # gear setting , have to checki joystick mapping
-        if input.button_a:
+        if input.button_y:
             throttle = +0.5
             gear     = GEAR_DRIVE # D
-        elif input.button_y:
+        elif input.button_a:
             throttle = -0.5
             gear     = GEAR_REVERSE # R
         elif input.button_x:
