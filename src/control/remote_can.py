@@ -21,6 +21,7 @@ def main():
 
     gamepad = ShanWanGamepad()
     car     = PiRacerStandard()
+    gear = GEAR_PARKING  # default value
 
     while True:
         input = gamepad.read_data()
