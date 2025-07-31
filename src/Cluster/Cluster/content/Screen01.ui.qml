@@ -15,6 +15,7 @@ Rectangle {
     property real rpmValue: 0
     property real speedValue: 0
     property real batteryValue: 0
+    property int  gearValue: 3
     width: Constants.width
     height: Constants.height
     color: "#000000"
@@ -274,8 +275,7 @@ Rectangle {
                     y: 105
                     width: 47
                     height: 41
-                    color: rectangle.rpmValue === 0
-                           && rectangle.speedValue === 0 ? "#ffffff" : "#7f7f7f"
+                    color: rectangle.gearValue === 3 ? "#ffffff" : "#7f7f7f"
                     text: "P"
                     font.pixelSize: 32
                     horizontalAlignment: Text.AlignHCenter
@@ -288,8 +288,7 @@ Rectangle {
                     y: 105
                     width: 47
                     height: 41
-                    color: rectangle.rpmValue > 0
-                           && rectangle.speedValue > 0 ? "#ffffff" : "#7f7f7f"
+                    color: rectangle.gearValue === 1 ? "#ffffff" : "#7f7f7f"
                     text: "D"
                     font.pixelSize: 32
                     horizontalAlignment: Text.AlignHCenter
@@ -302,8 +301,7 @@ Rectangle {
                     y: 105
                     width: 47
                     height: 41
-                    color: rectangle.rpmValue > 0
-                           && rectangle.speedValue === 0 ? "#ffffff" : "#7f7f7f"
+                    color: rectangle.gearValue === 0 ? "#ffffff" : "#7f7f7f"
                     text: "N"
                     font.pixelSize: 32
                     horizontalAlignment: Text.AlignHCenter
@@ -316,8 +314,7 @@ Rectangle {
                     y: 105
                     width: 47
                     height: 41
-                    color: rectangle.rpmValue > 0
-                           && rectangle.speedValue < 0 ? "#ffffff" : "#7f7f7f"
+                    color: rectangle.gearValue === 2 ? "#ffffff" : "#7f7f7f"
                     text: "R"
                     font.pixelSize: 32
                     horizontalAlignment: Text.AlignHCenter

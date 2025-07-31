@@ -3,6 +3,8 @@ import can
 from piracer.vehicles import PiRacerStandard
 from piracer.gamepads import ShanWanGamepad
 
+#id : 0x101
+
 GEAR_NEUTRAL = 0x00
 GEAR_DRIVE   = 0x01
 GEAR_REVERSE = 0x02
