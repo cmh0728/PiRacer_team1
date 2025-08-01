@@ -4,7 +4,7 @@
 volatile int pulseCount = 0;
 unsigned long lastTime = 0;
 int rpm = 0;
-int filteredRpm = 0;  // 이전값 저장
+int filteredRpm = 0;  // prev_data
 
 const int SPI_CS_PIN = 9;
 mcp2515_can CAN(SPI_CS_PIN);
@@ -37,7 +37,7 @@ void loop() {
 
     rpm = count * 60 * 10;  // 0.1초
 
-    // 🌟 최대 변화량 제한 방식 적용
+    // maxi
     int delta = rpm - filteredRpm;
     int diff  = 30 ;
     if (delta > diff) {
@@ -53,7 +53,7 @@ void loop() {
     Serial.print(" | RPM (smoothed): ");
     Serial.println(filteredRpm);
 
-    // CAN 메시지 전송
+    // CAN message
     byte rpmBytes[2];
     rpmBytes[0] = (filteredRpm >> 8) & 0xFF;
     rpmBytes[1] = filteredRpm & 0xFF;
