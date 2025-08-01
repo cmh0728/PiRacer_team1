@@ -180,15 +180,25 @@ candump can0
 - **21.07.25**  
   ‣ CAN communication with Speed Sensor   
 
-- **22.07.25**  
-  ‣ Kernel update  for using DSI -> FAIL
-  ‣ reinstall Raspberry pi OS
+- **25.07.25**  
+  ‣ Complete UI  
 
+
+- **28.07.25**  
+  ‣ UI connect ↔ CAN data  
+
+- **30.07.25**  
+  ‣ System Architecture 1.0  
+
+
+- **01.08.25**  
+  ‣ update Arduino code  
 
 ## 📋 Future To do
-  ‣ Qt Design for Cluster
+  ‣ ~~Qt Design for Cluster~~  
+  ‣ ~~Control with CPP~~  
+  ‣ update System Architecture
 
-  ‣ Control with CPP 
 
 
 ## check the battery voltage
