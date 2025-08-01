@@ -99,7 +99,7 @@ void CanReceiver::readCan()
 
         if (cms != m_speed) {
             m_speed = cms;
-            qDebug() << "[CanReceiver] new speed(cm/s):" << m_speed;
+            // qDebug() << "[CanReceiver] new speed(cm/s):" << m_speed;
             emit speedChanged();
         }
     }
