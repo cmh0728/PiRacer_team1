@@ -80,20 +80,30 @@ void CanReceiver::readCan()
 
     // read
     if (frame.can_id == 0x100 && frame.can_dlc >= 2) {
-        int value = (frame.data[0] << 8) | frame.data[1];
-        setRpm(value);
-        // speed 
-        constexpr qreal WHEEL_DIAM_CM = 6.8;
-        qreal circumference = M_PI * WHEEL_DIAM_CM / 100.0; // meters per revolution
-        qreal meters_per_min = value * circumference;      // m/min
-        int kmh = qRound(meters_per_min * 60.0 / 1000.0);  // km/h
-        
-        if (kmh != m_speed) {
-            m_speed = kmh;
-            qDebug() << "[CanReceiver] new speed:" << m_speed << "km/h";
+        int rpmValue = (frame.data[0] << 8) | frame.data[1];
+        setRpm(rpmValue);
+
+        // --- cm/s 계산 ---
+        // 바퀴 지름을 미터 단위로 지정
+        constexpr qreal WHEEL_DIAM_M = 6.8 / 100.0;  // 6.8 cm -> 0.068 m
+        qreal circumference = M_PI * WHEEL_DIAM_M;   // m/rev
+
+        // rpmValue 회전 → 초당 회전수 = rpmValue / 60
+        qreal revolutions_per_sec = rpmValue / 60.0;
+
+        // 초당 이동 거리(m) = revolutions_per_sec * circumference
+        qreal meters_per_sec = revolutions_per_sec * circumference;
+
+        // cm/s 로 변환
+        int cms = qRound(meters_per_sec * 100.0);
+
+        if (cms != m_speed) {
+            m_speed = cms;
+            qDebug() << "[CanReceiver] new speed(cm/s):" << m_speed;
             emit speedChanged();
         }
     }
+
     else if (frame.can_id == 0x101 && frame.can_dlc >= 1) {
         int newGear = frame.data[0];
         if (newGear != m_gear) {
