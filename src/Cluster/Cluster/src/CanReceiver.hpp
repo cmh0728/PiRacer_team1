@@ -12,6 +12,8 @@
 #include <unistd.h>
 #include <cstring>  
 #include <cstdio> 
+#include <QSocketNotifier>
+
 
 // i2c battery 
 #include <linux/i2c-dev.h>
@@ -53,7 +55,8 @@ private:
     int m_socket;
     int m_rpm = 0;
     int m_speed = 0;
-    QTimer *m_timer;
+    // QTimer *m_timer;
+    QSocketNotifier *m_canNotifier;
 
     //for battery 
     qreal m_batteryVoltage    = 0.0;
