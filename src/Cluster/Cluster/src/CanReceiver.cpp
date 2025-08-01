@@ -27,7 +27,7 @@ CanReceiver::CanReceiver(QObject *parent)
     if (flags < 0) {
         perror("fcntl F_GETFL");
     } else {
-        if (fcntl(m_socket, F_SETFL, flags | O_NONBLOCK) < 0)
+        if (fcntl(m_socket, F_SETFL, flags | O_NONBLOCK) < 0) //non blocking setting
             perror("fcntl F_SETFL O_NONBLOCK");
     }
 
