@@ -71,19 +71,28 @@ void CanReceiver::readCan()
     struct can_frame frame {};
     int nbytes = ::read(m_socket, &frame, sizeof(frame));
     if (nbytes < 0) {
-        // 데이터가 없으면 바로 리턴
+        // return if data is none
         if (errno == EAGAIN || errno == EWOULDBLOCK)
             return;
-        // 그 밖의 에러
         perror("CAN read");
         return;
     }
 
-    // 정상 읽기: 기존 처리 로직
+    // read
     if (frame.can_id == 0x100 && frame.can_dlc >= 2) {
         int value = (frame.data[0] << 8) | frame.data[1];
         setRpm(value);
-        // speed 계산 & emit...
+        // speed 
+        constexpr qreal WHEEL_DIAM_CM = 6.8;
+        qreal circumference = M_PI * WHEEL_DIAM_CM / 100.0; // meters per revolution
+        qreal meters_per_min = value * circumference;      // m/min
+        int kmh = qRound(meters_per_min * 60.0 / 1000.0);  // km/h
+        
+        if (kmh != m_speed) {
+            m_speed = kmh;
+            qDebug() << "[CanReceiver] new speed:" << m_speed << "km/h";
+            emit speedChanged();
+        }
     }
     else if (frame.can_id == 0x101 && frame.can_dlc >= 1) {
         int newGear = frame.data[0];
