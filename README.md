@@ -164,7 +164,7 @@ i2cget -y 1 0x41 0x02 w
 <!-- 개발 로그 및 할 일들  -->
 
 ## 🛠️ Development Log 
-- <ins>[Development Log Update]()</ins>
+- <ins>[Development Log Update](https://github.com/cmh0728/SEA-ME-DES/blob/main/log.md)</ins>
 
 
 ## References
