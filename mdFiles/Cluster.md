@@ -60,6 +60,7 @@ src/Arduino/can_speed.ino
 
 # for can test
 cd src/board
+
 python3 can_rpm.py 
 
 or 
@@ -91,14 +92,18 @@ RemainAfterExit=yes
 [Install]
 WantedBy=multi-user.target
 ```
+
 ```bash
+# bash
+
 # save file & activate
 sudo systemctl daemon-reload
+
 sudo systemctl enable can0.service
-```
-```bash
+
 # reboot and check 
 sudo reboot
+
 candump can0
 ```
 
@@ -106,6 +111,8 @@ candump can0
 ## 🔋 check the battery voltage
 ```bash
 # bash
+
 sudo apt install i2c-tools
+
 i2cget -y 1 0x41 0x02 w
 ```
