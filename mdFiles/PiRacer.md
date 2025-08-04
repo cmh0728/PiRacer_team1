@@ -21,6 +21,42 @@ Please refer to the following official manual for quick assembly.
 
 - <ins>[software setting](https://github.com/twyleg/piracer_py)</ins>
 
+## 🎮 Check Remote Control 
+you have to check your remote control key mapping
+```bash
+# bash
+
+cd SEA-ME-DES/src/control
+
+#run
+python3 remote_control.py
+```
+ 
+
+**Steering** : Left Joystick 
+
+
+**Throttle** : 
+
+      Press `A` ->  move front
+    
+      Press `X` ->  move rear
+      
+      Press `Y` ->  parking system activate
+
+## 📽️ Check Camera Stream 
+```bash
+# bash
+
+cd SEA-ME-DES/src/camera_stream
+
+#run
+python3 camera_web.py
+
+# connect to "http::[your car ip address]:8080"
+```
+
+
 
 ## 🖥️ Show Interface  
 **Voltage , Electic Current , Power , IP_address**
