@@ -28,3 +28,63 @@
 ### System architecture
 <!-- 동민이형꺼 받아서 변경  -->
 
+
+## 🔗 CAN BUS Communication Test
+
+```bash
+# bash
+
+# Upload Arduino Ide
+src/Arduino/can_speed.ino
+
+# for can test
+cd src/board
+python3 can_rpm.py 
+
+or 
+
+candump can0
+```
+
+## To automize CAN setting 
+If you want to automize CAN setting , follow down.
+```bash
+# bash
+
+# create new service file
+sudo nano /etc/systemd/system/can0.service 
+```
+```bash
+# paste this file 
+[Unit]
+Description=Setup CAN interface can0
+Wants=network.target
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/ip link set can0 up type can bitrate 500000 restart-ms 100
+ExecStop=/sbin/ip link set can0 down
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+```
+```bash
+# save file & activate
+sudo systemctl daemon-reload
+sudo systemctl enable can0.service
+```
+```bash
+# reboot and check 
+sudo reboot
+candump can0
+```
+
+
+## 🔋 check the battery voltage
+```bash
+# bash
+sudo apt install i2c-tools
+i2cget -y 1 0x41 0x02 w
+```
