@@ -25,6 +25,7 @@ Please refer to the following official manual for quick assembly.
 you have to check your remote control key mapping
 ```bash
 # bash
+git clone https://github.com/cmh0728/SEA-ME-DES.git
 
 cd SEA-ME-DES/src/control
 

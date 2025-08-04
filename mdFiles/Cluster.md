@@ -11,6 +11,10 @@
 <img width="630" height="502" alt="Image" src="https://github.com/user-attachments/assets/75017de1-eb9d-4e1a-8a69-e72a90c90cb2" />
 <!-- </p> -->
 
+### System architecture
+<img width="1188" height="726" alt="Image" src="https://github.com/user-attachments/assets/d8bef1b4-f8c2-430f-bad6-66f989c535ee" />
+
+
 ### Hardware components
 - **Raspberry Pi 4B**
 - **Arduino uno**
@@ -23,12 +27,28 @@
  - **python venv**
  - **python 3.10.x**
  - **Qt 6.9.1**
-  - **python multiprocessing**
+ - **Qtquick 6.4.2**
+ - **python multiprocessing**
 
-### System architecture
-<!-- 동민이형꺼 받아서 변경  -->
-<img width="1264" height="754" alt="Image" src="https://github.com/user-attachments/assets/8711852e-1a17-4f99-919e-a4552924e7db" />
 
+## Build & Run  Application
+```bash
+# bash
+
+cd SEA-ME-DES/src/Cluster/Cluster
+
+mkdir build
+
+cd build
+
+# you have to check cmake version & cmakelist.txt
+cmake ..
+
+make 
+
+# run
+./ClusterApp
+```
 
 ## 🔗 CAN BUS Communication Test
 

@@ -29,7 +29,7 @@ If you want to run our code, follow this scripts.
 # config file setting for Raspbery pi
 git clone https://github.com/cmh0728/SEA-ME-DES.git
 
-cd ~/PiRacer_team1/src/board
+cd ~/SEA-ME-DES//src/board
 
 # copy this file
 nano config.txt 
