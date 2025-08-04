@@ -27,6 +27,7 @@
 
 ### System architecture
 <!-- 동민이형꺼 받아서 변경  -->
+<img width="1264" height="754" alt="Image" src="https://github.com/user-attachments/assets/8711852e-1a17-4f99-919e-a4552924e7db" />
 
 
 ## 🔗 CAN BUS Communication Test
