@@ -11,66 +11,11 @@ This repository is the repository for the distributed embedded systems project o
 
 If you would like to refer to the parent project, see <ins>[Distributed embedded systems](https://github.com/SEA-ME/SEA-ME-course-book/tree/main/DistributedEmbeddedSystems)</ins>
 
+### Contents
+<!-- - <ins>[Software Setting]()</ins> -->
 - <ins>[PiRacer Assembly](#PiRacer-Assembly)</ins>
 - <ins>[Cluster](#cluster)</ins>
 - <ins>[Head Unit](#head-unit)</ins>
-
-<!-- piracer assembly부분 -->
-# PiRacer Assembly
-<img width="1276" height="1218" alt="Image" src="https://github.com/user-attachments/assets/f34aab97-945f-4665-9ab7-21c01cdb7119" />
-
-### System Architecture
-<img width="761" height="504" alt="Image" src="https://github.com/user-attachments/assets/642350d7-2cb5-4ff1-9345-c6043824acd4" />
-
-### Components
--  <ins>[PiRacer AI kit](https://www.waveshare.com/wiki/PiRacer_AI_Kit)</ins>
-- Raspberry Pi 4B
-- SD 64GB
-
-### Assembly & Setting
-Please refer to the following official manual for quick assembly. 
-
-- <ins>[PiRacer Assembly manual](https://www.waveshare.com/wiki/PiRacer_Assembly_Manual)</ins>
-
-If you want to quickly set up and test the software, please refer to the following GitHub.
-
-- <ins>[software setting](https://github.com/twyleg/piracer_py)</ins>
-
-### 🖥️ Show Interface  
-- **V,I,P,IP_address**
-
-```bash
-cd display
-sudo nano install_display_service.sh
-```
-
-```bash
-******* CHANGE PATH *******
-```
-
-
-
-<!-- cluster 부분 -->
-# Cluster
-<img width="1276" height="397" alt="Image" src="https://github.com/user-attachments/assets/7978a139-d85e-47fb-96e7-0c468c9e55b5" />
-
-##
-
-<img width="1276" height="1016" alt="Image" src="https://github.com/user-attachments/assets/cab1a7c0-655e-4ef5-b601-cc5cbc3ee628" />
-
-### Hardware components
-- **Raspberry Pi 4B**
-- **Arduino uno**
-- **Waveshare 7.9inch LCD-DSI**
-- **Speed sensor**
-- **Can shield & Can hat**
-
-### System architecture
- - **Raspberry pi OS aarch64**
- - **python venv**
- - **python 3.10.x**
- - **Qt 6.9.1**
-  - **python multiprocessing**
 
 
 ## DEMO 

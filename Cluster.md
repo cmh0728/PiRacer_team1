@@ -1,0 +1,21 @@
+<!-- cluster 부분 -->
+# Instrument Cluster
+<img width="1276" height="397" alt="Image" src="https://github.com/user-attachments/assets/7978a139-d85e-47fb-96e7-0c468c9e55b5" />
+
+##
+
+<img width="1276" height="1016" alt="Image" src="https://github.com/user-attachments/assets/cab1a7c0-655e-4ef5-b601-cc5cbc3ee628" />
+
+### Hardware components
+- **Raspberry Pi 4B**
+- **Arduino uno**
+- **Waveshare 7.9inch LCD-DSI**
+- **Speed sensor**
+- **Can shield & Can hat**
+
+### System architecture
+ - **Raspberry pi OS aarch64**
+ - **python venv**
+ - **python 3.10.x**
+ - **Qt 6.9.1**
+  - **python multiprocessing**
