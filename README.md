@@ -20,10 +20,12 @@ This is SEA:ME-Team1's repository for distributed embedded system project of SEA
 ## DEMO 
 
 ### ✅ Software Setting
-If you want to run our code, you have to try this.
+If you want to run our code, follow this scripts.
 
 
 ```bash
+#bash
+
 # config file setting for Raspbery pi
 git clone https://github.com/cmh0728/PiRacer_team1.git
 cd ~/PiRacer_team1/src/board
@@ -36,14 +38,22 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
+
 ## Run
 If you want to run our code, try this.
 ```bash
+# bash
+
 cd PiRacer_team1
+
+# activate venv
 source venv/bin/activate 
-python3 launch.py
+
+# Run all codes.
+python3 launch.py 
 ```
-## 🎮 Remote Control
+
+### 🎮 Remote Control 
 
 - **Steering** : Left joystick  
 - **Throttle** : 
@@ -51,27 +61,32 @@ python3 launch.py
       Press `A` ->  move front
     
       Press `X` ->  move rear
-## 📽️camera stream check
+
+### 📽️ Camera Stream 
 
 - connect to http::[your car ip address]:8080
 
 ## 🔗 CAN BUS Communication Test
 
-```Arduino upload
+```bash
+# bash
+
+# Arduino upload
 src/Arduino/can_speed.ino
 
-```bash
 cd src/cluster
 python3 can_rpm.py
 ```
 
 ## To automize CAN setting 
 ```bash
-#create new service file
+# bash
+
+# create new service file
 sudo nano /etc/systemd/system/can0.service 
 ```
 ```bash
-#paste this file 
+# paste this file 
 [Unit]
 Description=Setup CAN interface can0
 Wants=network.target
@@ -99,8 +114,8 @@ candump can0
 
 
 ## check the battery voltage
-``` 
-#bash
+```bash
+# bash
 sudo apt install i2c-tools
 i2cget -y 1 0x41 0x02 w
 ```

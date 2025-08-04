@@ -18,9 +18,13 @@
 - **Speed sensor**
 - **Can shield & Can hat**
 
-### System architecture
+### Software architecture
  - **Raspberry pi OS aarch64**
  - **python venv**
  - **python 3.10.x**
  - **Qt 6.9.1**
   - **python multiprocessing**
+
+### System architecture
+<!-- 동민이형꺼 받아서 변경  -->
+
