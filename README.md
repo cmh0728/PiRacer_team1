@@ -26,21 +26,34 @@ If you want to run our code, follow this scripts.
 ```bash
 #bash
 
-# To setting Apt installing dependencies
+# config file setting for Raspbery pi
 git clone https://github.com/cmh0728/SEA-ME-DES.git
+
+cd ~/PiRacer_team1/src/board
+
+# copy this file
+nano config.txt 
+
+#paste to here and save
+sudo nano /boot/firmware/config.txt 
+
+# Interface option --> activate I2C, Camera, DSI
+sudo raspi-config
+
+sudo reboot
+
+# To setting Apt installing dependencies
 cd SEA-ME-DES/
+
 bash bootstrap-apt.sh
 
-# config file setting for Raspbery pi
-git clone https://github.com/cmh0728/PiRacer_team1.git
-cd ~/PiRacer_team1/src/board
-nano config.txt # copy this file
-sudo nano /boot/firmware/config.txt #paste to here
-
 # to set pip install 
-cd PiRacer_team1
+cd SEA-ME-DES/
+
 python3 -m venv venv
+
 source venv/bin/activate
+
 pip install -r requirements.txt
 ```
 
@@ -58,6 +71,7 @@ python3 launch.py
 ```
 
 ### 🎮 Remote Control 
+you have to check your remote control key mapping 
 
 - **Steering** : Left joystick  
 - **Throttle** : 
@@ -65,6 +79,8 @@ python3 launch.py
       Press `A` ->  move front
     
       Press `X` ->  move rear
+      
+      Press `Y` ->  parking system activate
 
 ### 📽️ Camera Stream 
 
