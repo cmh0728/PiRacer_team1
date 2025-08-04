@@ -1,5 +1,5 @@
-# 🚗 SEA:ME-DES Team1 
-**This is SEA:ME Team1's repository.**
+# SEA:ME-DES Team1 
+This is SEA:ME-Team1's repository for distributed embedded system project of SEA:ME 
 
 **Project : <ins>[SEA:ME - DES](https://github.com/SEA-ME/SEA-ME-course-book/tree/main/DistributedEmbeddedSystems)</ins>**
 
@@ -7,15 +7,12 @@
 
 <!-- 목차 및 소개  -->
 # Distributed embedded systems
-This repository is the repository for the distributed embedded systems project of SEA:ME.
-
-If you would like to refer to the parent project, see <ins>[Distributed embedded systems](https://github.com/SEA-ME/SEA-ME-course-book/tree/main/DistributedEmbeddedSystems)</ins>
 
 ### Contents
 <!-- - <ins>[Software Setting]()</ins> -->
-- <ins>[PiRacer Assembly](#PiRacer-Assembly)</ins>
-- <ins>[Cluster](#cluster)</ins>
-- <ins>[Head Unit](#head-unit)</ins>
+- <ins>[PiRacer Assembly](https://github.com/cmh0728/SEA-ME-DES/blob/main/PiRacer.md)</ins>
+- <ins>[Cluster](https://github.com/cmh0728/SEA-ME-DES/blob/main/Cluster.md)</ins>
+- <ins>[Head Unit](https://github.com/cmh0728/SEA-ME-DES/blob/main/HeadUnit.md)</ins>
 
 
 ## DEMO 

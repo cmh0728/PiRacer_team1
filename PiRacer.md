@@ -1,4 +1,4 @@
-# PiRacer Assembly
+# 🚗 PiRacer Assembly
 <img width="1276" height="1218" alt="Image" src="https://github.com/user-attachments/assets/f34aab97-945f-4665-9ab7-21c01cdb7119" />
 
 ### System Architecture
