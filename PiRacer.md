@@ -1,8 +1,14 @@
 # 🚗 PiRacer Assembly
-<img width="1276" height="1218" alt="Image" src="https://github.com/user-attachments/assets/f34aab97-945f-4665-9ab7-21c01cdb7119" />
+### Hardware
+<p align="center">
+<img width="434" height="414" alt="Image" src="https://github.com/user-attachments/assets/f147b15e-b7f0-4ab0-b1ad-8b48a1bc4163" />
+</p>
 
 ### System Architecture
+<!-- 동민이형꺼 받아서 변경  -->
+<p align="center">
 <img width="761" height="504" alt="Image" src="https://github.com/user-attachments/assets/642350d7-2cb5-4ff1-9345-c6043824acd4" />
+</p>
 
 ### Components
 -  <ins>[PiRacer AI kit](https://www.waveshare.com/wiki/PiRacer_AI_Kit)</ins>
