@@ -1,14 +1,22 @@
 <!-- cluster 부분 -->
 # Instrument Cluster
 
-### Cluster GUI
+### Contents
+- [Cluster GUI](#cluster-gui) 
+- [Hardware](#hardware)
+- [System architecture](#system-architecture)
+- [Build & Run](#build--run--application)
+- [About CAN communication](#-can-communication)
+- [About Battery](#-battery)
+
+## Cluster GUI
 <!-- <p align="center"> -->
 <img width="1276" height="397" alt="Image" src="https://github.com/user-attachments/assets/7978a139-d85e-47fb-96e7-0c468c9e55b5" />
 <!-- </p> -->
 
-##
 
-### Hardware
+
+## Hardware
 <!-- <p align="center"> -->
 <img width="630" height="502" alt="Image" src="https://github.com/user-attachments/assets/75017de1-eb9d-4e1a-8a69-e72a90c90cb2" />
 <!-- </p> -->
@@ -22,9 +30,8 @@
 - **Can shield & Can hat**
 <!-- 구성요소 링크 추가 ? ?? -->
 
-##
 
-### System architecture
+## System architecture
 <img width="1188" height="726" alt="Image" src="https://github.com/user-attachments/assets/d8bef1b4-f8c2-430f-bad6-66f989c535ee" />
 
 <!-- 멀티프로세싱이랑, 신호가 어떻게 전달되는지 들어가있나? -->
@@ -56,8 +63,8 @@ make
 # run
 ./ClusterApp
 ```
-
-## 🔗 CAN BUS Communication Test
+## 🔗 CAN communication
+### CAN Communication Test
 
 ```bash
 # bash
@@ -75,7 +82,8 @@ or
 candump can0
 ```
 
-## To automize CAN setting 
+
+### To automize CAN setting 
 If you want to automize CAN setting , follow down.
 ```bash
 # bash
@@ -114,8 +122,8 @@ sudo reboot
 candump can0
 ```
 
-
-## 🔋 check the battery voltage
+## 🔋 Battery 
+### check the battery voltage
 ```bash
 # bash
 
