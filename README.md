@@ -12,7 +12,7 @@ This is SEA:ME-Team1's repository for distributed embedded system project of SEA
 <!-- - <ins>[Software Setting]()</ins> -->
 - <ins>[PiRacer Assembly](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/PiRacer.md)</ins>
 
-- <ins>[Cluster](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/Cluster.md)</ins>
+- <ins>[Instrument Cluster](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/Cluster.md)</ins>
 
 - <ins>[Head Unit](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/HeadUnit.md)</ins>
 
