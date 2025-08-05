@@ -78,4 +78,10 @@ sudo nano install_display_service.sh
 ```
 
 
+## References
+1. Raspberry Pi Foundation (2021). Raspberry Pi Hardware Reference. Available at: https://www.raspberrypi.com/documentation/computers/raspberry-pi.html
+
+
+
+
 

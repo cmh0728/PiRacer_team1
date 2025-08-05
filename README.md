@@ -93,8 +93,3 @@ you have to check your remote control key mapping
 - <ins>[Development Log Update](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/log.md)</ins>
 
 
-## References
-
-update later
-
-

@@ -13,6 +13,7 @@
 <img width="630" height="502" alt="Image" src="https://github.com/user-attachments/assets/75017de1-eb9d-4e1a-8a69-e72a90c90cb2" />
 <!-- </p> -->
 
+<!-- 구성요소 링크 추가 ? ?? -->
 ### Hardware components
 - **Raspberry Pi 4B**
 - **Arduino uno**
@@ -122,3 +123,7 @@ sudo apt install i2c-tools
 
 i2cget -y 1 0x41 0x02 w
 ```
+
+
+## References
+1. The Qt Company (2021). Qt 5.15.0 Reference Documentation. Available at: https://doc.qt.io/archives/qt-5.15/index.html
