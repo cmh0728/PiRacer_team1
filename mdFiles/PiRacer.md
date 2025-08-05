@@ -24,7 +24,9 @@ Please refer to the following official manual for quick assembly.
 
 - <ins>[software setting](https://github.com/twyleg/piracer_py)</ins>
 
-## 🎮 Check Remote Control 
+##
+
+### 🎮 Check Remote Control 
 you have to check your remote control key mapping
 ```bash
 # bash
@@ -48,7 +50,9 @@ python3 remote_control.py
       
       Press `Y` ->  parking system activate
 
-## 📽️ Check Camera Stream 
+##
+
+### 📽️ Check Camera Stream 
 ```bash
 # bash
 
@@ -60,9 +64,9 @@ python3 camera_web.py
 # connect to "http::[your car ip address]:8080"
 ```
 
+##
 
-
-## 🖥️ Show Interface  
+### 🖥️ Show Interface  
 **Voltage , Electic Current , Power , IP_address**
 
 ```bash
