@@ -13,26 +13,26 @@
 <img width="630" height="502" alt="Image" src="https://github.com/user-attachments/assets/75017de1-eb9d-4e1a-8a69-e72a90c90cb2" />
 <!-- </p> -->
 
-<!-- 구성요소 링크 추가 ? ?? -->
+
 ### Hardware components
 - **Raspberry Pi 4B**
 - **Arduino uno**
 - **Waveshare 7.9inch LCD-DSI**
 - **Speed sensor**
 - **Can shield & Can hat**
-
+<!-- 구성요소 링크 추가 ? ?? -->
 
 ##
 
 ### System architecture
 <img width="1188" height="726" alt="Image" src="https://github.com/user-attachments/assets/d8bef1b4-f8c2-430f-bad6-66f989c535ee" />
 
+<!-- 멀티프로세싱이랑, 신호가 어떻게 전달되는지 들어가있나? -->
 
-
-### Software architecture
- - **Raspberry pi OS aarch64**
+### Software components
+ - **Raspberry Pi OS aarch64**
  - **python venv**
- - **python 3.10.x**
+ - **python 3.10**
  - **Qt 6.9.1**
  - **Qtquick 6.4.2**
  - **python multiprocessing**
