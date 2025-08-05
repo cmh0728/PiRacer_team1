@@ -90,7 +90,7 @@ you have to check your remote control key mapping
 <!-- 개발 로그 및 할 일들  -->
 
 ## Development Log 
-- <ins>[Development Log Update](https://github.com/cmh0728/SEA-ME-DES/blob/main/log.md)</ins>
+- <ins>[Development Log Update](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/log.md)</ins>
 
 
 ## References
