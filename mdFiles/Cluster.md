@@ -135,3 +135,4 @@ i2cget -y 1 0x41 0x02 w
 
 ## References
 1. The Qt Company (2021). Qt 5.15.0 Reference Documentation. Available at: https://doc.qt.io/archives/qt-5.15/index.html
+2. CAN BUS wiki. Available at : https://wiki.seeedstudio.com/CAN-BUS_Shield_V2.0/

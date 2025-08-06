@@ -36,4 +36,4 @@
 ## 📋 Future To do
   ‣ ~~Qt Design for Cluster~~  
   ‣ ~~Control with CPP~~  
-  ‣ update System Architecture
+  ‣ ~~update System Architecture~~
