@@ -38,7 +38,7 @@ void loop() {
     rpm = count * 60 * 10;  // 0.1sec
 
     
-    int delta = rpm - filteredRpm;
+    int delta = rpm - filteredRpm; //filter
     int diff  = 20 ;
     if (delta > diff) {
       filteredRpm += diff;
