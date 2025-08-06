@@ -455,8 +455,8 @@ Rectangle {
 
     Text {
         id: rpm_500
-        x: 145
-        y: 191
+        x: 150
+        y: 183
         width: 81
         height: 35
         color: "#b7b2b2"
