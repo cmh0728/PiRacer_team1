@@ -35,11 +35,11 @@ void loop() {
     pulseCount = 0;
     interrupts();
 
-    rpm = count * 60 * 10;  // 0.1초
+    rpm = count * 60 * 10;  // 0.1sec
 
-    // maxi
+    
     int delta = rpm - filteredRpm;
-    int diff  = 30 ;
+    int diff  = 20 ;
     if (delta > diff) {
       filteredRpm += diff;
     } else if (delta < -diff) {
@@ -48,12 +48,16 @@ void loop() {
       filteredRpm = rpm;
     }
 
+    if (rpm ==0) {
+      filteredRpm  = 0;
+    }
+
     Serial.print("RPM (raw): ");
     Serial.print(rpm);
     Serial.print(" | RPM (smoothed): ");
     Serial.println(filteredRpm);
 
-    // CAN message
+    // CAN 
     byte rpmBytes[2];
     rpmBytes[0] = (filteredRpm >> 8) & 0xFF;
     rpmBytes[1] = filteredRpm & 0xFF;
@@ -68,3 +72,4 @@ void loop() {
     lastTime = currentTime;
   }
 }
+
