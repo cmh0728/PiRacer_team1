@@ -83,9 +83,9 @@ void loop() {
     }
 
     // 안전한 범위 보정
-    if (filteredRpm < 20) {
+    if (filteredRpm < 10) {
       filteredRpm = 0;
-
+    }
     Serial.print("RPM (raw): ");
     Serial.print(rpm);
     Serial.print(" | RPM (filtered): ");
