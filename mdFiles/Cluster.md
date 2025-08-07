@@ -12,7 +12,7 @@
 
 ## Cluster GUI
 <!-- <p align="center"> -->
-<img width="1276" height="397" alt="Image" src="https://github.com/user-attachments/assets/7978a139-d85e-47fb-96e7-0c468c9e55b5" />
+<img width="1278" height="392" alt="Image" src="https://github.com/user-attachments/assets/7daadfb9-8e0c-4587-a9b9-30488f2c8ba7" />
 <!-- </p> -->
 
 
