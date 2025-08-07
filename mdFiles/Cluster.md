@@ -6,6 +6,7 @@
 - [Hardware](#hardware)
 - [System architecture](#system-architecture)
 - [Build & Run](#build--run--application)
+- [Automize system](#Automize-system)
 - [About CAN communication](#-can-communication)
 - [About Battery](#-battery)
 
@@ -63,6 +64,52 @@ make
 # run
 ./ClusterApp
 ```
+
+## Automize system 
+If you go through this process, instead of running launch.py , the system will start automatically when you boot it.
+
+```bash
+# bash 
+
+# edit system service file
+sudo nano /etc/systemed/system/piracer.service 
+
+# cooy and paste this file
+[Unit]
+Description=PiRacer Qt Launcher
+After=graphical.target
+
+[Service]
+Type=simple
+User=pi
+Environment=DISPLAY=:0
+WorkingDirectory=/home/pi/SEA-ME-DES
+ExecStart=/home/pi/SEA-ME-DES/piracer/bin/python /home/pi/SEA-ME-DES/launch.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=graphical.target
+
+# edit 'pi' to your os user name 
+# ctrl + o  and ctrl + x to save and exit 
+
+# reload daemon 
+sudo systemctl daemon-reload
+
+# activate service
+sudo systemctl enable piracer.service
+
+# for test  and check 
+sudo systemctl restart piracer.service
+sudo systemctl status piracer.service
+
+# reboot
+sudo reboot 
+sudo journalctl -b -u piracer.service -f
+```
+
+
 ## 🔗 CAN communication
 ### CAN Communication Test
 

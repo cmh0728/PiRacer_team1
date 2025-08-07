@@ -58,6 +58,7 @@ pip install -r requirements.txt
 ```
 
 ## Run
+If you want to make system automatically, check [Instrument Cluster](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/Cluster.md)
 ```bash
 # bash
 
