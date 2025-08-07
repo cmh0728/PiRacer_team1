@@ -186,7 +186,7 @@ Rectangle {
                     origin.x: 96 //rpm_center 기반의 계산
                     origin.y: 190
                     //angle: rectangle.rpmValue * 0.18 + 17
-                    angle: rectangle.rpmValue * 0.15 * 0.5 - 142 // <- 회전 각도 연결
+                    angle: rectangle.rpmValue * 0.15 - 142 // <- 회전 각도 연결
                 }
             ]
         }
@@ -447,7 +447,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "500"
+        text: "250"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
@@ -460,7 +460,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "1000"
+        text: "500"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
@@ -473,7 +473,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "1500"
+        text: "750"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
@@ -486,7 +486,7 @@ Rectangle {
         width: 81
         height: 35
         color: "#b7b2b2"
-        text: "2000"
+        text: "1000"
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
