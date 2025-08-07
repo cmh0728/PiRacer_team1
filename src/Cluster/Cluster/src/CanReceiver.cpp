@@ -11,18 +11,22 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
+'''
+This code for read CAN data and register Q_PROPERTY
+rpm, speed, battery status , gear status
+'''
 
 CanReceiver::CanReceiver(QObject *parent)
     : QObject(parent)
 {
-    // 1) CAN 소켓 생성
+    // make CAN socket
     m_socket = ::socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (m_socket < 0) {
         perror("Socket");
         return;
     }
 
-    // 2) 논블로킹 모드 설정
+    // setting non-blocket mode(socket)
     int flags = fcntl(m_socket, F_GETFL, 0);
     if (flags < 0) {
         perror("fcntl F_GETFL");
@@ -31,7 +35,7 @@ CanReceiver::CanReceiver(QObject *parent)
             perror("fcntl F_SETFL O_NONBLOCK");
     }
 
-    // 3) 인터페이스 바인딩
+    // interface binding
     struct ifreq ifr {};
     ioctl(m_socket, SIOCGIFINDEX, &ifr);
     struct sockaddr_can addr {};
@@ -44,17 +48,12 @@ CanReceiver::CanReceiver(QObject *parent)
         return;
     }
 
-    // 4) QSocketNotifier 생성: 읽기 준비 시 readCan() 호출
+    // make QSocketNotifier--> call readCan() 
     m_canNotifier = new QSocketNotifier(m_socket, QSocketNotifier::Read, this);
     connect(m_canNotifier, &QSocketNotifier::activated,
             this, &CanReceiver::readCan);
 
-    // --- 기존 m_timer 는 제거 ---
-    // m_timer = new QTimer(this);
-    // connect(m_timer, &QTimer::timeout, this, &CanReceiver::readCan);
-    // m_timer->start(10);
-
-    // 배터리 I2C 설정 및 배터리 타이머는 그대로
+    // battery setting (I2C)
     const char* i2cDev = "/dev/i2c-1";
     m_i2c_fd = ::open(i2cDev, O_RDWR);
     if (m_i2c_fd < 0 || ioctl(m_i2c_fd, I2C_SLAVE, 0x41) < 0) {
@@ -84,18 +83,15 @@ void CanReceiver::readCan()
         setRpm(rpmValue);
 
         // --- cm/s 계산 ---
-        // 바퀴 지름을 미터 단위로 지정
-        constexpr qreal WHEEL_DIAM_M = 6.8 / 100.0;  // 6.8 cm -> 0.068 m
-        qreal circumference = M_PI * WHEEL_DIAM_M;   // m/rev
+        constexpr qreal WHEEL_DIAM_M = 6.8 ;  // 6.8 cm 
+        qreal circumference = M_PI * WHEEL_DIAM_M;   // 둘레 
 
         // rpmValue 회전 → 초당 회전수 = rpmValue / 60
         qreal revolutions_per_sec = rpmValue / 60.0;
 
         // 초당 이동 거리(m) = revolutions_per_sec * circumference
-        qreal meters_per_sec = revolutions_per_sec * circumference;
-
-        // cm/s 로 변환
-        int cms = qRound(meters_per_sec * 100.0);
+        qreal cmmeters_per_sec = revolutions_per_sec * circumference;
+        int cms = qRound(cmmeters_per_sec);
 
         if (cms != m_speed) {
             m_speed = cms;
@@ -130,6 +126,7 @@ void CanReceiver::readBattery() // I2C read  0x41
     // calculate vlotage
     qreal voltage = raw12 * 0.004;  // V
 
+    // for debugging battery status
     // debugging --> 12.2v check . 
     // qDebug()
     //     << "[INA219]"
