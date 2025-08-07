@@ -11,10 +11,9 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
-'''
-This code for read CAN data and register Q_PROPERTY
-rpm, speed, battery status , gear status
-'''
+
+// This code for read CAN data and register Q_PROPERTY rpm, speed, battery status , gear status
+
 
 CanReceiver::CanReceiver(QObject *parent)
     : QObject(parent)
