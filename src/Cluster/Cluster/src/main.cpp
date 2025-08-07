@@ -9,11 +9,9 @@
 
 int main(int argc, char *argv[])
 {
-    '''
-    This code is for init qml engine , 
-    CanReceiver instance register and 
-    for full screen display 
-    '''
+    
+    // This code is for init qml engine , CanReceiver instance register and for full screen display 
+    
     
     Q_INIT_RESOURCE(qml); 
 
