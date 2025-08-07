@@ -33,6 +33,13 @@
 - **01.08.25**  
   ‣ update Arduino code  
 
+- **07.08.25**  
+  ‣ Update Arduino code(kalman filter)  
+  ‣ Update connection(Arduino ↔ Raspberry Pi)  
+  ‣ Update UI  
+
+
+
 ## 📋 Future To do
   ‣ ~~Qt Design for Cluster~~  
   ‣ ~~Control with CPP~~  
