@@ -27,10 +27,10 @@ Window {
         Screen02 {
             id: screen02
             // property binding 
-            rpmValue: rpmSmooth
-            speedValue: canReceiver.speed
-            batteryValue: canReceiver.batteryPercent
-            gearValue: canReceiver.gear
+            // rpmValue: rpmSmooth
+            // speedValue: canReceiver.speed
+            // batteryValue: canReceiver.batteryPercent
+            // gearValue: canReceiver.gear
         }
     }
 
