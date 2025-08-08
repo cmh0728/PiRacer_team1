@@ -1,53 +1,64 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
-
 import QtQuick 6.4
-import Cluster
 import QtQuick.Controls 6.4
+import QtQuick.Layouts 6.4
+import Cluster
 
 Window {
-    id : root
-    width: mainScreen.width
-    height: mainScreen.height
-    visible: true
-    title: "Cluster"
+    id: root
+    width: Constants.width
+    height: Constants.height
+    visible: true; title: "Cluster"
 
-    property real rpmSmooth: 0  
+    // Layout for screen change
+    StackLayout {
+        id: screenStack
+        anchors.fill: parent
 
-    //Screen01 binding
-    Screen01 {
-        id: mainScreen
-        color: "#000000"
-        // rpmValue: canReceiver.rpm
-        rpmValue: rpmSmooth
-        speedValue: canReceiver.speed
-        batteryValue: canReceiver.batteryPercent
-        gearValue: canReceiver.gear
+        // index 0 : Screen01
+        Screen01 {
+            id: screen01
+            rpmValue: rpmSmooth
+            speedValue: canReceiver.speed
+            batteryValue: canReceiver.batteryPercent
+            gearValue: canReceiver.gear
+        }
 
-        Button {
-            id: button
-            x: 1210
-            y: 13
-            text: qsTr("mode")
+        // index 1 : Screen02
+        Screen02 {
+            id: screen02
+            // property binding 
+            rpmValue: rpmSmooth
+            speedValue: canReceiver.speed
+            batteryValue: canReceiver.batteryPercent
+            gearValue: canReceiver.gear
         }
     }
-    // RPM 
-    NumberAnimation {
-        id: rpmAnim
-        target: root
-        property: "rpmSmooth"
-        duration: 300
-        easing.type: Easing.InOutQuad
+
+    // button click --> mode change to index
+    Button {
+        id: modeBtn
+        x: 1202
+        text: qsTr("mode")
+        anchors.rightMargin: 24
+        anchors.topMargin: 19
+        anchors { right: parent.right; top: parent.top; margins: 20 }
+        onClicked: {
+            // index change between 0 and 1
+            screenStack.currentIndex = (screenStack.currentIndex + 1) % screenStack.count
+        }
     }
 
+    // RPM animation (기존 그대로)
+    property real rpmSmooth: 0
+    NumberAnimation {
+        id: rpmAnim; target: root; property: "rpmSmooth"
+        duration: 300; easing.type: Easing.InOutQuad
+    }
     Connections {
         target: canReceiver
         function onRpmChanged() {
-            // console.log("🔄 RPM Changed:", canReceiver.rpm) //debugging
-            rpmSmooth = canReceiver.rpm   
+            rpmSmooth = canReceiver.rpm
             rpmAnim.restart()
         }
     }
-
 }
-
