@@ -3,7 +3,7 @@
 
 import QtQuick 6.4
 import Cluster
-import QtQuick.Controls 6.5
+import QtQuick.Controls 6.4
 
 Window {
     id : root
@@ -14,18 +14,9 @@ Window {
 
     property real rpmSmooth: 0  
 
-    StackView{
-        
-        id: stack
-        anchors.fill: parent
-        initialItem: Qt.resolvedUrl("Screen01.qml")
-    }
-
     //Screen01 binding
     Screen01 {
         id: mainScreen
-        x: 0
-        y: 0
         color: "#000000"
         // rpmValue: canReceiver.rpm
         rpmValue: rpmSmooth
@@ -35,8 +26,8 @@ Window {
 
         Button {
             id: button
-            x: 1201
-            y: 17
+            x: 1210
+            y: 13
             text: qsTr("mode")
         }
     }
