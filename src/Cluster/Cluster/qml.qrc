@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>content/App.qml</file>
         <file>content/Screen01.ui.qml</file>
+        <file>content/Screen02.ui.qml</file>
         <file>imports/Cluster/Constants.qml</file>
         <file>imports/Cluster/EventListModel.qml</file>
         <file>imports/Cluster/EventListSimulator.qml</file>
