@@ -8,7 +8,7 @@ Rectangle {
     // 여기에 Screen02 전용 UI 컴포넌트 배치
     Text {
         anchors.centerIn: parent
-        text: "Second Screen"
+        text: "Second UI Screen"
         color: "white"
         font.pixelSize: 40
     }
