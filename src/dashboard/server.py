@@ -116,7 +116,7 @@ def telemetry_loop():
             # 10Hz로만 브로드캐스트(emit 너무 자주하면 브라우저 FPS 떨어짐)
             now = time.time()
             if now - last_emit >= 0.1:
-                socketio.emit('telemetry', telemetry, broadcast=True)
+                socketio.emit('telemetry', telemetry) 
                 last_emit = now
             socketio.sleep(0.01)
 
