@@ -14,7 +14,7 @@ width, height = 640, 480
 frame_size = width * height * 3 // 2
 
 rpicam = None
-app = Flask(__name__, static_folder="frontend/static")  # /static/index.html 서빙
+app = Flask(__name__, static_folder="static")  # /static/index.html 서빙
 CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")  # pip install eventlet
 
