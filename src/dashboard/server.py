@@ -5,15 +5,20 @@ from flask import Flask, Response, send_from_directory
 from flask_cors import CORS
 from flask_socketio import SocketIO
 # pip install python-can (필요 시)
+import shutil, platform
+
+
 try:
     import can
 except ImportError:
     can = None
 
 width, height = 640, 480
+fps = 30
 frame_size = width * height * 3 // 2
 
 rpicam = None
+cap = None
 app = Flask(__name__, static_folder="static")  # /static/index.html 서빙
 CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")  # pip install eventlet
@@ -26,46 +31,84 @@ telemetry = {
     "battery": 0         # %
 }
 
+def has_rpicam():
+    return shutil.which("rpicam-vid") is not None and platform.machine().startswith(("arm", "aarch64"))
+
+
 def start_camera():
-    global rpicam
-    if rpicam is None or rpicam.poll() is not None:
-        rpicam = subprocess.Popen([
-            'rpicam-vid',
-            '--width', str(width),
-            '--height', str(height),
-            '--framerate', '30',
-            '--codec', 'yuv420',
-            '--timeout', '0',
-            '--nopreview',
-            '-o', '-'
-        ], stdout=subprocess.PIPE, preexec_fn=os.setsid)
-        atexit.register(stop_camera)
+    global rpicam, cap
+    if has_rpicam():
+        if rpicam is None or rpicam.poll() is not None:
+            rpicam = subprocess.Popen([
+                'rpicam-vid',
+                '--width', str(width),
+                '--height', str(height),
+                '--framerate', str(fps),
+                '--codec', 'yuv420',
+                '--timeout', '0',
+                '--nopreview',
+                '-o', '-'
+            ], stdout=subprocess.PIPE, preexec_fn=os.setsid)
+            atexit.register(stop_camera)
+    else:
+        if cap is None:
+            # macOS/PC 웹캠
+            backend = cv2.CAP_AVFOUNDATION if platform.system() == "Darwin" else cv2.CAP_ANY
+            cap = cv2.VideoCapture(0, backend)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+            cap.set(cv2.CAP_PROP_FPS, fps)
+            if not cap.isOpened():
+                raise RuntimeError("cannot open webcam")
 
 def stop_camera():
-    global rpicam
+    global rpicam, cap
+    # rpicam 종료
     if rpicam and rpicam.poll() is None:
         try:
             os.killpg(rpicam.pid, signal.SIGTERM)
         except Exception:
             pass
-        rpicam.wait(timeout=2)
-        rpicam = None
+        try:
+            rpicam.wait(timeout=2)
+        except Exception:
+            pass
+    rpicam = None
+    # cap 종료
+    if cap is not None:
+        try:
+            cap.release()
+        except Exception:
+            pass
+    cap = None
 
 def frame_generator():
     start_camera()
-    while True:
-        raw = rpicam.stdout.read(frame_size)
-        if len(raw) != frame_size:
-            break
-        yuv = np.frombuffer(raw, dtype=np.uint8).reshape((height * 3 // 2, width))
-        bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
-        bgr = cv2.rotate(bgr, cv2.ROTATE_180)
-        ok, jpeg = cv2.imencode('.jpg', bgr)
-        if not ok:  # 프레임 인코딩 실패 시 skip
-            continue
-        yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' +
-               jpeg.tobytes() + b'\r\n')
-
+    if rpicam and rpicam.poll() is None:
+        # Pi: YUV420 → BGR
+        while True:
+            raw = rpicam.stdout.read(frame_size)
+            if not raw or len(raw) < frame_size:
+                break
+            yuv = np.frombuffer(raw, dtype=np.uint8).reshape((height * 3 // 2, width))
+            bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
+            bgr = cv2.rotate(bgr, cv2.ROTATE_180)  # Pi용 회전 유지
+            ok, jpeg = cv2.imencode('.jpg', bgr, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+            if not ok:
+                continue
+            yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+    else:
+        # mac/PC: OpenCV 캡처
+        while True:
+            ok, bgr = cap.read()
+            if not ok:
+                break
+            # 필요 시 회전/오버레이
+            ok, jpeg = cv2.imencode('.jpg', bgr, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
+            if not ok:
+                continue
+            yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+            
 @app.route('/video_feed')
 def video_feed():
     return Response(frame_generator(), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -86,7 +129,7 @@ def telemetry_loop():
             telemetry["speed_cms"] = min(telemetry["speed_cms"] + 5, 2800)
             telemetry["gear"] = 1
             telemetry["battery"] = max(0, 100 - (t // 50) % 101)
-            socketio.emit('telemetry', telemetry, broadcast=True)
+            socketio.emit('telemetry', telemetry)
             socketio.sleep(0.1)
     else:
         # 실제 CAN 버스에서 읽어 파싱 (ID/포맷은 너의 규격에 맞게 변경)
@@ -122,6 +165,7 @@ def telemetry_loop():
 
 def main():
     print("Server on: http://0.0.0.0:8080")
+    
     start_camera()
     # SocketIO 백그라운드 태스크로 텔레메트리 송신 시작
     socketio.start_background_task(telemetry_loop)
