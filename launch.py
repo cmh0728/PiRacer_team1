@@ -4,6 +4,8 @@ import signal, sys , os, subprocess
 import src.camera_stream.camera_web  as cam #camera streaming
 # import src.control.remote_control as rm_control #remote control
 import src.control.remote_can as rm_control #remote control
+import src.dashboard.server as sv #server code
+
 
 CLUSTER_PATH = os.path.join(os.path.dirname(__file__),"src","Cluster","Cluster","build","ClusterApp")
 
@@ -23,7 +25,8 @@ def main():
     except RuntimeError:
         pass  
 
-    p1 = Process(target=cam.main)
+    # p1 = Process(target=cam.main)
+    p1 = Process(target=sv.main)
     p2 = Process(target=rm_control.main)
     p3 = Process(target=run_cluster,name="head_u")
 
