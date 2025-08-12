@@ -116,7 +116,7 @@ def video_feed():
 # 정적 프런트 (한 페이지)
 @app.route('/')
 def index():
-    return send_from_directory('static', 'index1.html')
+    return send_from_directory('static', 'index.html') # select html file
 
 # ======= 텔레메트리 송신 루프 (예: python-can로 직접 읽음) =======
 def telemetry_loop():
