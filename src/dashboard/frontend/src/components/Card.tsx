@@ -14,7 +14,7 @@ export default function Card({ title, value, unit }: CardProps) {
     // - 모서리: 둥글게 처리(rounded-2xl)
     // - 내부 여백: 부모 크기의 2%(p-[2%])
     // - 그림자 효과: 작게(shadow-sm)
-    <div className="relative rounded-2xl border bg-gray-900 p-[2%] shadow-sm flex flex-col">
+    <div className="relative rounded-2xl border bg-neutral-800 p-[2%] shadow-sm flex flex-col">
       
       {/* 제목 영역 */}
       {/* - 약간의 투명도(opacity-70)로 강조를 줄임 */}
