@@ -19,7 +19,7 @@ frame_size = width * height * 3 // 2
 
 rpicam = None
 cap = None
-app = Flask(__name__, static_folder="static")  # /static/index.html 서빙
+app = Flask(__name__, static_folder="static")  # /dist/index.html 서빙
 CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")  # pip install eventlet
 
@@ -116,7 +116,11 @@ def video_feed():
 # 정적 프런트 (한 페이지)
 @app.route('/')
 def index():
-    return send_from_directory('static', 'index.html') # select html file
+    return send_from_directory(app.static_folder, 'index.html') # select html file
+
+@app.route("/assets/<path:filename>")
+def assets(filename):
+    return send_from_directory(f"{app.static_folder}/assets", filename)
 
 # ======= 텔레메트리 송신 루프 (예: python-can로 직접 읽음) =======
 def telemetry_loop():

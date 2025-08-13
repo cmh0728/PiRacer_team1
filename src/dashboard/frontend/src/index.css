@@ -24,7 +24,7 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
+  display: f  lex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -70,3 +70,4 @@ button:focus-visible {
 
 /* tailwind css import  */
 @import "tailwindcss";
+html, body, #root { height: 100%; margin: 0; }

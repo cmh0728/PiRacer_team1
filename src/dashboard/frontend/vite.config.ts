@@ -6,4 +6,5 @@ import tailwindcss from '@tailwindcss/vite'
 // add tailwindcss plugin
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: './', // ← 상대 경로로 빌드
 })
