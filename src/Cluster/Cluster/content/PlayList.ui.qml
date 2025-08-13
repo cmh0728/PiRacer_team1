@@ -1,7 +1,7 @@
 import QtQuick 6.4
 import QtQuick.Controls 6.4
-import Qt.labs.folderlistmodel 1.0
 import QtQuick.Layouts 6.4
+import QtQml 6.4
 
 Rectangle {
     id: playlistBox
@@ -14,7 +14,6 @@ Rectangle {
 
     // === 상태/옵션 ===
     property bool isPlaying: true
-    property bool autoProgress: isPlaying // 재생 상태와 동기화
     property int currentIndex: 0
     property int slotPadding: 10
     property int albumFillMode: Image.PreserveAspectFit
@@ -22,10 +21,8 @@ Rectangle {
     // === 재생 정보 ===
     property int totalPlaybackDuration: 223
     property real currentPlaybackTime: 0
-    property string trackTitle: "Song Title"
-    property string trackArtist: "Artist"
 
-    // 트랙 변경 시 0초로 리셋 (단일 표현식)
+    // 트랙 변경 시 0초로 리셋
     onCurrentIndexChanged: currentPlaybackTime = 0
 
     // === 시간 포맷 (함수 호출 없이) ===
@@ -40,42 +37,225 @@ Rectangle {
     property int progressPercent: totalPlaybackDuration > 0 ? ((currentPlaybackTime * 100
                                                                 / totalPlaybackDuration) | 0) : 0
 
-    // === 초 단위 자동 진행 (단일 표현식) ===
+    // === 초 단위 자동 진행 ===
     Timer {
         id: progressTimer
         interval: 1000
-        running: autoProgress
+        running: isPlaying
         repeat: true
         onTriggered: currentPlaybackTime = currentPlaybackTime
-                     < totalPlaybackDuration ? currentPlaybackTime + 1 : totalPlaybackDuration
+                     < totalPlaybackDuration ? currentPlaybackTime + 1 : currentPlaybackTime
     }
 
-    // === 앨범 이미지 모델 ===
-    FolderListModel {
+    // 끝에 도달하면 한 번만 다음 곡으로
+    Timer {
+        id: nextTrackTimer
+        interval: 0
+        repeat: false
+        running: isPlaying && (currentPlaybackTime >= totalPlaybackDuration)
+        onTriggered: currentIndex = playlistImages.count
+                     > 0 ? ((currentIndex + 1) < playlistImages.count ? currentIndex + 1 : 0) : 0
+    }
+
+    // === 앨범 모델 (qrc 경로 사용) ===
+    // 상대경로로 쓰고 싶으면 아래 "../images/..." 를 "../images/..." 로 바꿔도 됩니다.
+    ListModel {
         id: playlistImages
-        folder: "../images/albums/"
-        nameFilters: ["*.jpg", "*.png", "*.jpeg", "*.JPG", "*.PNG", "*.JPEG"]
-        showDirs: false
+        ListElement {
+            fileURL: "../images/albums/195.jpg"
+            trackArtist: "RAC"
+            trackTitle: "195"
+        }
+        ListElement {
+            fileURL: "../images/albums/2020.jpg"
+            trackArtist: "Samaris"
+            trackTitle: "2020"
+        }
+        ListElement {
+            fileURL: "../images/albums/aerosmith.jpg"
+            trackArtist: "Aerosmith"
+            trackTitle: "Dream On"
+        }
+        ListElement {
+            fileURL: "../images/albums/appetite.jpg"
+            trackArtist: "Guns N' Roses"
+            trackTitle: "Sweet Child O' Mine"
+        }
+        ListElement {
+            fileURL: "../images/albums/astral.jpg"
+            trackArtist: "Astral Tales"
+            trackTitle: "Voyage"
+        }
+        ListElement {
+            fileURL: "../images/albums/atrey.jpg"
+            trackArtist: "Atreyu"
+            trackTitle: "Becoming The Bull"
+        }
+        ListElement {
+            fileURL: "../images/albums/bangles.jpg"
+            trackArtist: "The Bangles"
+            trackTitle: "Manic Monday"
+        }
+        ListElement {
+            fileURL: "../images/albums/beast.jpg"
+            trackArtist: "Beastie Boys"
+            trackTitle: "Sabotage"
+        }
+        ListElement {
+            fileURL: "../images/albums/born.jpg"
+            trackArtist: "Bruce Springsteen"
+            trackTitle: "Born in the U.S.A."
+        }
+        ListElement {
+            fileURL: "../images/albums/callme.jpg"
+            trackArtist: "Blondie"
+            trackTitle: "Call Me"
+        }
+        ListElement {
+            fileURL: "../images/albums/cyberpunk.jpg"
+            trackArtist: "Cyberpunk 2077 OST"
+            trackTitle: "Chippin' In"
+        }
+        ListElement {
+            fileURL: "../images/albums/doomsday.jpg"
+            trackArtist: "Nero"
+            trackTitle: "Doomsday"
+        }
+        ListElement {
+            fileURL: "../images/albums/drift.jpg"
+            trackArtist: "Carpenter Brut"
+            trackTitle: "Turbo Killer"
+        }
+        ListElement {
+            fileURL: "../images/albums/duett.jpg"
+            trackArtist: "Duett"
+            trackTitle: "Horizons"
+        }
+        ListElement {
+            fileURL: "../images/albums/escape.jpg"
+            trackArtist: "INYAN"
+            trackTitle: "Escape"
+        }
+        ListElement {
+            fileURL: "../images/albums/exploration.jpg"
+            trackArtist: "Timecop1983"
+            trackTitle: "Exploration"
+        }
+        ListElement {
+            fileURL: "../images/albums/firebird.jpg"
+            trackArtist: "Dance With The Dead"
+            trackTitle: "Firebird"
+        }
+        ListElement {
+            fileURL: "../images/albums/gunship.jpg"
+            trackArtist: "GUNSHIP"
+            trackTitle: "Tech Noir"
+        }
+        ListElement {
+            fileURL: "../images/albums/holo.jpg"
+            trackArtist: "HOME"
+            trackTitle: "Resonance"
+        }
+        ListElement {
+            fileURL: "../images/albums/hunting.jpg"
+            trackArtist: "The Midnight"
+            trackTitle: "Hunting Season"
+        }
+        ListElement {
+            fileURL: "../images/albums/language.jpg"
+            trackArtist: "Porter Robinson"
+            trackTitle: "Language"
+        }
+        ListElement {
+            fileURL: "../images/albums/LAU.jpg"
+            trackArtist: "LAU"
+            trackTitle: "True"
+        }
+        ListElement {
+            fileURL: "../images/albums/lebrock.jpg"
+            trackArtist: "LeBrock"
+            trackTitle: "Runaway"
+        }
+        ListElement {
+            fileURL: "../images/albums/megawave.jpg"
+            trackArtist: "FM-84"
+            trackTitle: "Bend & Break"
+        }
+        ListElement {
+            fileURL: "../images/albums/melez.jpg"
+            trackArtist: "Melez"
+            trackTitle: "Afterglow"
+        }
+        ListElement {
+            fileURL: "../images/albums/motel.jpg"
+            trackArtist: "Moonrunner83"
+            trackTitle: "Motel"
+        }
+        ListElement {
+            fileURL: "../images/albums/nofuture.jpg"
+            trackArtist: "Com Truise"
+            trackTitle: "Propagation"
+        }
+        ListElement {
+            fileURL: "../images/albums/ocular.jpg"
+            trackArtist: "Wice"
+            trackTitle: "Ocular"
+        }
+        ListElement {
+            fileURL: "../images/albums/patti.jpg"
+            trackArtist: "Patti Smith"
+            trackTitle: "Because the Night"
+        }
+        ListElement {
+            fileURL: "../images/albums/pylot.jpg"
+            trackArtist: "PYLOT"
+            trackTitle: "With Me"
+        }
+        ListElement {
+            fileURL: "../images/albums/runthe.jpg"
+            trackArtist: "Run The Jewels"
+            trackTitle: "Legend Has It"
+        }
+        ListElement {
+            fileURL: "../images/albums/scandroid.jpg"
+            trackArtist: "Scandroid"
+            trackTitle: "Shout"
+        }
+        ListElement {
+            fileURL: "../images/albums/slippery.jpg"
+            trackArtist: "Bon Jovi"
+            trackTitle: "Livin' on a Prayer"
+        }
+        ListElement {
+            fileURL: "../images/albums/visions.jpg"
+            trackArtist: "Stranger Things OST"
+            trackTitle: "Kids"
+        }
+        ListElement {
+            fileURL: "../images/albums/waves.jpg"
+            trackArtist: "Mr. Probz"
+            trackTitle: "Waves"
+        }
     }
 
-    // ===== 상단 콘텐츠 영역 (Album slot + 정보 패널) =====
+    // ===== 상단 콘텐츠 영역 =====
     Rectangle {
         id: albumSlot
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.bottom: controlsBar.top // ▼ 버튼바 위까지
+        anchors.bottom: controlsBar.top
         anchors.leftMargin: 14
         anchors.rightMargin: 14
         anchors.topMargin: 19
-        anchors.bottomMargin: 8 // 버튼바와 살짝 간격
+        anchors.bottomMargin: 8
         radius: 12
         color: Qt.rgba(0, 0, 0, 0.35)
         border.color: Qt.rgba(255, 255, 255, 0.15)
         border.width: 1
         clip: true
 
-        // 좌측: 앨범 이미지
+        // 좌측: 앨범 이미지 (ListView로 현재 인덱스 강제 노출)
         Rectangle {
             id: albumImageArea
             anchors.top: parent.top
@@ -88,21 +268,44 @@ Rectangle {
             color: "transparent"
             clip: true
 
-            Repeater {
+            ListView {
+                id: albumView
+                anchors.fill: parent
                 model: playlistImages
-                Image {
-                    anchors.fill: parent
-                    source: fileURL
-                    fillMode: albumFillMode
-                    sourceSize.width: width
-                    sourceSize.height: height
-                    smooth: true
-                    mipmap: true
-                    cache: true
-                    asynchronous: true
-                    horizontalAlignment: Image.AlignHCenter
-                    verticalAlignment: Image.AlignVCenter
-                    visible: index === playlistBox.currentIndex
+                currentIndex: playlistBox.currentIndex
+                interactive: false
+                orientation: ListView.Horizontal
+                boundsBehavior: Flickable.StopAtBounds
+                snapMode: ListView.SnapOneItem
+                clip: true
+
+                // ★ currentIndex가 화면에 꼭 보이도록 강제
+                focus: true
+                highlightRangeMode: ListView.StrictlyEnforceRange
+                preferredHighlightBegin: 0
+                preferredHighlightEnd: width
+                highlightMoveDuration: 0
+                cacheBuffer: width
+
+                delegate: Item {
+                    // 모델 역할을 delegate 속성으로 그대로 받기(.ui.qml OK)
+                    required property string fileURL
+                    required property string trackTitle
+                    required property string trackArtist
+
+                    width: albumView.width
+                    height: albumView.height
+
+                    Image {
+                        anchors.fill: parent
+                        source: fileURL
+                        fillMode: playlistBox.albumFillMode
+                        sourceSize.width: width
+                        sourceSize.height: height
+                        smooth: true
+                        cache: true
+                        mipmap: true
+                    }
                 }
             }
 
@@ -118,7 +321,6 @@ Rectangle {
         // 우측: 제목/아티스트/시간/진행바
         Rectangle {
             id: rightInfoPanel
-            x: 117
             width: 245
             anchors.top: parent.top
             anchors.right: parent.right
@@ -138,7 +340,8 @@ Rectangle {
                 anchors.topMargin: 10
                 anchors.leftMargin: 10
                 anchors.rightMargin: 10
-                text: trackTitle
+                // ★ 함수 호출 없이 현재 delegate의 role 접근
+                text: albumView.currentItem ? albumView.currentItem.trackTitle : ""
                 color: "white"
                 font.pixelSize: 16
                 font.bold: true
@@ -152,7 +355,7 @@ Rectangle {
                 anchors.left: titleLabel.left
                 anchors.right: titleLabel.right
                 anchors.topMargin: 6
-                text: trackArtist
+                text: albumView.currentItem ? albumView.currentItem.trackArtist : ""
                 color: "#cfcfcf"
                 font.pixelSize: 13
                 elide: Text.ElideRight
@@ -205,7 +408,7 @@ Rectangle {
         }
     }
 
-    // ===== 하단 컨트롤 바 (Album slot 밖, playlistBox 하단) =====
+    // ===== 하단 컨트롤 바 =====
     Rectangle {
         id: controlsBar
         height: 40
@@ -226,17 +429,13 @@ Rectangle {
             anchors.centerIn: parent
             spacing: 16
 
-            // 공통 아이콘 컬러
             property color iconColor: "#d0d0d0"
             property color hoverColor: "#ffffff"
 
-            // === Prev (세모 1개 + 세로바) ===
+            // Prev (◀|)
             Item {
-                id: prevBtn
                 width: 28
                 height: 28
-
-                // 세로바 (왼쪽)
                 Rectangle {
                     width: 3
                     height: 18
@@ -247,17 +446,15 @@ Rectangle {
                     color: prevArea.containsMouse ? controlsRow.hoverColor : controlsRow.iconColor
                     opacity: 0.95
                 }
-                // 삼각형 (바와 거의 붙게)
                 Text {
                     text: "◀"
                     font.pixelSize: 18
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: parent.left
-                    anchors.leftMargin: 6 // 바(3px)+여백(1px) 정도로 붙임
+                    anchors.leftMargin: 6
                     color: prevArea.containsMouse ? controlsRow.hoverColor : controlsRow.iconColor
                     opacity: 0.95
                 }
-
                 MouseArea {
                     id: prevArea
                     anchors.fill: parent
@@ -269,12 +466,10 @@ Rectangle {
                 }
             }
 
-            // === Play (▶) ===
+            // Play (▶)
             Item {
-                id: playBtn
                 width: 28
                 height: 28
-
                 Text {
                     text: "▶"
                     font.pixelSize: 20
@@ -282,7 +477,6 @@ Rectangle {
                     color: playArea.containsMouse ? controlsRow.hoverColor : controlsRow.iconColor
                     opacity: isPlaying ? 0.4 : 1.0
                 }
-
                 MouseArea {
                     id: playArea
                     anchors.fill: parent
@@ -292,12 +486,10 @@ Rectangle {
                 }
             }
 
-            // === Pause (⏸) ===
+            // Pause (⏸)
             Item {
-                id: pauseBtn
                 width: 28
                 height: 28
-
                 Rectangle {
                     width: 6
                     height: 18
@@ -318,7 +510,6 @@ Rectangle {
                     color: pauseArea.containsMouse ? controlsRow.hoverColor : controlsRow.iconColor
                     opacity: !isPlaying ? 0.4 : 1.0
                 }
-
                 MouseArea {
                     id: pauseArea
                     anchors.fill: parent
@@ -328,59 +519,39 @@ Rectangle {
                 }
             }
 
-            // === Next (세모 1개 + 세로바) ===
+            // Next (|▶)
             Item {
-                id: nextBtn
                 width: 28
                 height: 28
-
-                // 삼각형 (오른쪽 바라보는)
-                Text {
-                    text: "▶"
-                    font.pixelSize: 18
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: parent.left
-                    anchors.leftMargin: 6
-                    color: nextArea.containsMouse ? controlsRow.hoverColor : controlsRow.iconColor
-                    opacity: 0.95
-                }
-                // 세로바 (오른쪽, 삼각형에 붙게)
                 Rectangle {
                     width: 3
                     height: 18
                     radius: 1
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: parent.right
-                    anchors.rightMargin: 2
+                    anchors.left: parent.left
+                    anchors.leftMargin: 5
                     color: nextArea.containsMouse ? controlsRow.hoverColor : controlsRow.iconColor
                     opacity: 0.95
                 }
-
+                Text {
+                    text: "▶"
+                    font.pixelSize: 18
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 5
+                    color: nextArea.containsMouse ? controlsRow.hoverColor : controlsRow.iconColor
+                    opacity: 0.95
+                }
                 MouseArea {
                     id: nextArea
                     anchors.fill: parent
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: currentIndex = playlistImages.count
-                               > 0 ? (currentIndex + 1
+                               > 0 ? ((currentIndex + 1)
                                       < playlistImages.count ? currentIndex + 1 : 0) : 0
                 }
             }
         }
     }
-
-    // (옵션) 디버그
-
-
-    /*
-    Text {
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        anchors.margins: 8
-        text: "idx: " + currentIndex + " / count: " + playlistImages.count
-        color: "#cfcfcf"
-        font.pixelSize: 12
-        opacity: 0.6
-    }
-    */
 }
