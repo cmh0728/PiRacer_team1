@@ -19,6 +19,9 @@ Rectangle {
     width: Constants.width
     height: Constants.height
     color: "#000000"
+    property alias speed_10: speed_10
+
+    property bool modeToggle: modeBtn.trigger
 
     Image {
         id: speed_guage
@@ -490,5 +493,14 @@ Rectangle {
         font.pixelSize: 20
         horizontalAlignment: Text.AlignHCenter
         clip: true
+    }
+    ModeToggleIcon {
+        id: modeBtn
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.rightMargin: 16
+        anchors.topMargin: 16
+        iconSize: 32
+        // source: "qrc:/images/sport.png"   // 기본값 그대로 쓰면 주석 유지 가능
     }
 }

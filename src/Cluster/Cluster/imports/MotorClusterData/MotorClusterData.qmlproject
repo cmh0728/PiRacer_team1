@@ -1,0 +1,18 @@
+import QmlProject
+
+Project
+{
+    MCU.Module
+    {
+        uri: "MotorClusterData"
+    }
+
+    QmlFiles
+    {
+        files: [
+            "Constants.qml",
+            "Style.qml"
+        ]
+    }
+}
+
