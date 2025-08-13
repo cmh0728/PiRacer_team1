@@ -1,8 +1,7 @@
-// 이 부분은 그대로 두세요
-import QtQuick
-import QtQuickUltralite.Extras
-import MotorClusterData
+// content/Tacho.ui.qml
+import QtQuick 6.4
 
+//import MotorClusterData
 Item {
     id: root
 
@@ -12,23 +11,22 @@ Item {
     height: 300
 
     Text {
-        text: speed // 이제 이 speedValue는 외부에서 받은 값을 참조합니다.
         id: textValue
-        color: Style.white
+        text: speed // speedValue? ???? ??
+        color: "#ffffff"
         anchors.centerIn: parent
         font.pixelSize: 149
         font.family: "Barlow-mono"
     }
 
-    StaticText {
+    Text {
         id: unit
-        font.pixelSize: 32
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.horizontalCenterOffset: 0
-        anchors.topMargin: 0
-        font.family: "Barlow-mono"
-        color: Style.white
         text: "cm/s"
+        anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: textValue.bottom
+        anchors.topMargin: 0
+        color: "#ffffff"
+        font.pixelSize: 32
+        font.family: "Barlow-mono"
     }
 }
