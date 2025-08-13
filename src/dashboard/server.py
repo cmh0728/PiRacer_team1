@@ -84,6 +84,7 @@ def stop_camera():
 
 def frame_generator():
     start_camera()
+    # for rpicam 
     if rpicam and rpicam.poll() is None:
         # Pi: YUV420 → BGR
         while True:

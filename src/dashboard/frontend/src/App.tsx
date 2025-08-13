@@ -23,9 +23,12 @@ export default function App() {
 
           {/* 카메라 */}
           <div className="relative rounded-2xl border overflow-hidden bg-neutral-800">
-            <span className="absolute top-[50%] left-[40%] inline-flex items-center rounded-xl border px-3 py-1 text-[max(20px,1.4vmin)] font-semibold bg-gray-500/80">
-              <img id="video" src="/video_feed" className="w-full h-auto block" alt="camera" />
-            </span>
+            <img
+              id="video"
+              src="/video_feed"
+              alt="camera"
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <div>
