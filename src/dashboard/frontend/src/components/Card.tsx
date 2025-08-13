@@ -19,7 +19,7 @@ export default function Card({ title, value, unit }: CardProps) {
       {/* 제목 영역 */}
       {/* - 약간의 투명도(opacity-70)로 강조를 줄임 */}
       {/* - 화면 크기에 따라 자동 조정되는 반응형 폰트 크기 */}
-      <div className="absolute top-[5%] left-[5%] text-[max(30px,1.4vmin)] opacity-80 text-white text-left">
+      <div className="absolute top-[5%] left-[5%] text-[max(20px,1.4vmin)] opacity-80 text-neutral-400 text-left">
         {title}
       </div>
       
