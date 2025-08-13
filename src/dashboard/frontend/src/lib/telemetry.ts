@@ -3,4 +3,5 @@ export type Telemetry = {
   speed: number;   // cm/s
   battery: number; // 0~100 %
   gear : string;
+  
 };
