@@ -1,7 +1,7 @@
 # server.py  (라즈베리파이에서 실행)
 import subprocess, atexit, os, signal, threading, time
 import cv2, numpy as np
-from flask import Flask, Response, send_from_directory
+from flask import Flask, Response, send_from_directory , render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 # pip install python-can (필요 시)
@@ -116,7 +116,7 @@ def video_feed():
 # 정적 프런트 (한 페이지)
 @app.route('/')
 def index():
-    return send_from_directory('static', 'index.html')
+    return send_from_directory('static', 'index.html') # select html file
 
 # ======= 텔레메트리 송신 루프 (예: python-can로 직접 읽음) =======
 def telemetry_loop():

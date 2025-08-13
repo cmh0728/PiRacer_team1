@@ -71,3 +71,6 @@ piracer/
 # If you produce extra build dirs per platform, catch them:
 build-*/
 out-*/
+
+
+src/dashboard/frontend/dist
