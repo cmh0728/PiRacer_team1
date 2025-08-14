@@ -10,10 +10,16 @@
 - [About CAN communication](#-can-communication)
 - [About Battery](#-battery)
 
-## Cluster GUI
+## Cluster GUI(first mode)
 <!-- <p align="center"> -->
 <img width="1278" height="392" alt="Image" src="https://github.com/user-attachments/assets/7daadfb9-8e0c-4587-a9b9-30488f2c8ba7" />
 <!-- </p> -->
+
+## Cluster GUI(second mode)
+<!-- <p align="center"> -->
+<img width="1278" height="392" alt="Image" src="src/Cluster/Cluster/images/secondui.png" />
+<!-- </p> -->
+
 
 
 
@@ -182,4 +188,5 @@ i2cget -y 1 0x41 0x02 w
 
 ## References
 1. The Qt Company (2021). Qt 5.15.0 Reference Documentation. Available at: https://doc.qt.io/archives/qt-5.15/index.html
-2. CAN BUS wiki. Available at : https://wiki.seeedstudio.com/CAN-BUS_Shield_V2.0/
+2. CAN BUS wiki. Available at : https://wiki.seeedstudio.com/CAN-BUS_Shield_V2.0/  
+3. Qt Design studio Example. Available at https://doc.qt.io/qtdesignstudio/studioexamples.html
