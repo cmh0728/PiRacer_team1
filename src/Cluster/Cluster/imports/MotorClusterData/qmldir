@@ -1,0 +1,5 @@
+Module MotorClusterData
+singleton Constants 1.0 Constants.qml
+singleton Style 1.0 Style.qml
+
+
