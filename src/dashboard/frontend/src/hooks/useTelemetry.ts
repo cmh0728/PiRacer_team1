@@ -15,7 +15,7 @@ export default function useTelemetry() {
   // t: 현재 telemetry 데이터 상태
   // setT: 상태 변경 함수
   // 초기값: { rpm: 0, speed: 0, battery: 0 }
-  const [t, setT] = useState<Telemetry>({ rpm: 0, speed: 0, battery: 0 ,gear : "P"});
+  const [t, setT] = useState<Telemetry>({ rpm: 0, speed: 0, battery: 100 ,gear : "P"});
 
   // sock: 현재 소켓 연결 객체를 저장하는 ref
   // - useRef 사용 이유: 컴포넌트 리렌더링 시에도 소켓 인스턴스를 유지

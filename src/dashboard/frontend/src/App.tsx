@@ -49,7 +49,7 @@ export default function App() {
                   style={{ width: `${t.battery}%` }}
                 ></div>
               </div>
-              <div className="text-sm text-neutral-300 mt-1 text-[max(15px,1.4vmin)]">{t.battery} %</div>
+              <div className="flex-1 flex text-sm text-neutral-300 mt-1 text-[max(15px,1.4vmin)]">{t.battery} %</div>
             </div>
             <Card title="Gear" value={t.gear}/>
           </div>
