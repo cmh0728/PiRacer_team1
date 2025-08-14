@@ -150,46 +150,31 @@ def assets(filename):
 # ====== 텔레메트리 송신 루프 ======
 def telemetry_loop():
     if can is None:
-        # # python-can이 없으면 테스트 데이터 송출
-        # t = 0
-        # while True:
-        #     t += 1
-        #     telemetry["rpm"] = (telemetry["rpm"] + 30) % 7000
-        #     telemetry["speed"] = min(telemetry["speed"] + 5, 2800)
-        #     telemetry["gear"] = 1
-        #     telemetry["battery"] = max(0, 100 - (t // 50) % 101)
-        #     socketio.emit('telemetry', telemetry)  # 브라우저로 전송
-        #     socketio.sleep(0.1)
         pass
     else:
-        # 실제 CAN 데이터 수신
         bus = can.interface.Bus(channel='can0', interface='socketcan')
         last_emit = 0
         while True:
-            msg = bus.recv(timeout=0.05)  # 약간의 대기
+            msg = bus.recv(timeout=0.05)
             if msg:
-                # RPM 데이터 (예: ID=0x100 , index 0)
+                # RPM + 속도
                 if msg.arbitration_id == 0x100 and msg.dlc >= 2:
                     rpm = (msg.data[0] << 8) | msg.data[1]
                     telemetry["rpm"] = int(rpm)
+                    wheel_diam_cm = 6.8
+                    cm_per_sec = (rpm / 60.0) * (math.pi * wheel_diam_cm)
+                    telemetry["speed"] = int(round(cm_per_sec))
 
-                    # 속도 계산 및 텔레메트리 푸시 (cm/s)
-                    wheel_diam_cm = 6.8  # 6.8cm
-                    cmmeters_per_sec = (rpm / 60.0) * (math.pi * wheel_diam_cm)
-                    telemetry["speed"] = int(round(cmmeters_per_sec))
-
-                # 기어 데이터 (예: ID=0x101)
+                # 기어
                 elif msg.arbitration_id == 0x101 and msg.dlc >= 1:
-                    if int(msg.data[0]) == 0 :  # N
-                        telemetry["gear"] = "N"
-                    elif int(msg.data[0]) == 1 : # D 
-                        telemetry["gear"] = "D"
-                    elif int(msg.data[0]) == 2 :    # R
-                        telemetry["gear"] = "R"
-                    elif int(msg.data[0]) == 3 :    #  p     
-                        telemetry["gear"] = "P"
+                    gear_val = int(msg.data[0])
+                    telemetry["gear"] = {0:"N", 1:"D", 2:"R", 3:"P"}.get(gear_val, "?")
 
-            # 0.1초마다 데이터 전송
+                # 배터리 (CAN ID 0x102)
+                elif msg.arbitration_id == 0x102 and msg.dlc >= 1:
+                    telemetry["battery"] = int(msg.data[0])
+
+            # 주기적으로 브라우저에 전송
             now = time.time()
             if now - last_emit >= 0.1:
                 socketio.emit('telemetry', telemetry)

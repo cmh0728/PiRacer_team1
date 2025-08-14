@@ -132,7 +132,7 @@ void CanReceiver::readBattery() // I2C read  0x41
     //     << ("raw16=0x" + QString::number(raw16, 16).toUpper())
     //     << QString("voltage=%1V").arg(voltage);
 
-    // voltage to percent(linear interpolation)
+    // voltage to percent(linear interpolation) 
     static constexpr qreal MIN_V = 9.0, MAX_V = 12.6;
     qreal pct = (voltage - MIN_V)/(MAX_V - MIN_V)*100.0;
     int percent = std::lround(qBound<qreal>(0, pct, 100));
@@ -140,6 +140,19 @@ void CanReceiver::readBattery() // I2C read  0x41
     if (percent != m_batteryPercent) {
         m_batteryPercent = percent;
         emit batteryChanged();
+
+        // ====== CAN 전송 추가 ======
+        struct can_frame txFrame {};
+        txFrame.can_id  = 0x102;      // 배터리 전용 ID
+        txFrame.can_dlc = 1;          // 데이터 길이 1바이트
+        txFrame.data[0] = static_cast<uint8_t>(m_batteryPercent);
+
+        if (m_socket >= 0) {
+            int nbytes = ::write(m_socket, &txFrame, sizeof(txFrame));
+            if (nbytes != sizeof(txFrame)) {
+                perror("CAN send battery");
+            }
+        }
     }
 }
 
