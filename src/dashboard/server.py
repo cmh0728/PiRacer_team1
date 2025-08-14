@@ -62,7 +62,7 @@ def start_camera():
                 '--nopreview',        # 미리보기 비활성화
                 '-o', '-'             # 표준출력으로 전송
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid)
-            atexit.register(stop_camera())  # 프로그램 종료 시 카메라 정리
+            atexit.register(stop_camera)  # 프로그램 종료 시 카메라 정리
     else:
         # 일반 PC/Mac 웹캠 사용
         if cap is None:
@@ -202,7 +202,7 @@ def main():
     print("Server on: http://0.0.0.0:8080")
     
     start_camera()  # 카메라 초기화
-    socketio.start_background_task(telemetry_loop())  # 텔레메트리 송신 쓰레드 시작
+    socketio.start_background_task(telemetry_loop)  # 텔레메트리 송신 쓰레드 시작
     socketio.run(app, host='0.0.0.0', port=8080)    # Flask+SocketIO 서버 실행
 
 
