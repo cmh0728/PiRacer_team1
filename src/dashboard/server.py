@@ -4,6 +4,7 @@ from flask import Flask, Response, send_from_directory , render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 import shutil, platform
+import math
 
 # python-can 패키지 임포트 (없으면 None으로 설정)
 try:
@@ -167,19 +168,26 @@ def telemetry_loop():
         while True:
             msg = bus.recv(timeout=0.05)  # 약간의 대기
             if msg:
-                # RPM 데이터 (예: ID=0x100)
+                # RPM 데이터 (예: ID=0x100 , index 0)
                 if msg.arbitration_id == 0x100 and msg.dlc >= 2:
                     rpm = (msg.data[0] << 8) | msg.data[1]
                     telemetry["rpm"] = int(rpm)
 
-                    # 속도 계산 (cm/s)
-                    wheel_diam_m = 0.068  # 6.8cm
-                    meters_per_sec = (rpm / 60.0) * (np.pi * wheel_diam_m)
-                    telemetry["speed"] = int(round(meters_per_sec * 100.0))
+                    # 속도 계산 및 텔레메트리 푸시 (cm/s)
+                    wheel_diam_cm = 6.8  # 6.8cm
+                    cmmeters_per_sec = (rpm / 60.0) * (math.pi * wheel_diam_cm)
+                    telemetry["speed"] = int(round(cmmeters_per_sec))
 
                 # 기어 데이터 (예: ID=0x101)
                 elif msg.arbitration_id == 0x101 and msg.dlc >= 1:
-                    telemetry["gear"] = int(msg.data[0])
+                    if int(msg.data[0]) == 0 :  # N
+                        telemetry["gear"] = "N"
+                    elif int(msg.data[0]) == 1 : # D 
+                        telemetry["gear"] = "D"
+                    elif int(msg.data[0]) == 2 :    # R
+                        telemetry["gear"] = "R"
+                    elif int(msg.data[0]) == 3 :    #  p     
+                        telemetry["gear"] = "P"
 
             # 0.1초마다 데이터 전송
             now = time.time()
