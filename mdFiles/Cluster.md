@@ -17,7 +17,7 @@
 
 ## Cluster GUI(second mode)
 <!-- <p align="center"> -->
-<img width="1278" height="392" alt="Image" src="src/Cluster/Cluster/images/secondui.png" />
+<img width="1278" height="392" alt="Image" src="../src/Cluster/Cluster/images/secondui.png" />
 <!-- </p> -->
 
 
