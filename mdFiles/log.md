@@ -37,6 +37,8 @@
   ‣ Update Arduino code(kalman filter)  
   ‣ Update connection(Arduino ↔ Raspberry Pi)  
   ‣ Update UI  
+- **13.08.25**  
+  ‣ Sports Mode UI(second) with music player    
 
 
 
