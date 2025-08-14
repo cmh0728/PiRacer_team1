@@ -10,7 +10,7 @@ Rectangle {
     anchors.fill: parent
     property alias rpmbottom: rpmbottom
 
-    property real speedValue: 0
+    property real speedValue: 140
     property bool showPlayer: false
     property bool modeToggle: modeBtn.trigger
 
@@ -269,8 +269,8 @@ Rectangle {
         // 140km/h를 14개의 세그먼트로 나누어 각 10km/h 단위로 불이 들어오도록 설정
         RpmSegment {
             id: segment_1
-            x: 8
-            y: 121
+            x: 10
+            y: 138
             //opacity: 1
             opacity: speedValue > 0 ? 1 : 0
             color: internal.colorA
@@ -280,8 +280,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_2
-            x: 66
-            y: 92
+            x: 68
+            y: 109
             //opacity: 1
             opacity: speedValue > 10 ? 1 : 0
             source: "../images/big/tacho/2.png"
@@ -291,8 +291,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_3
-            x: 130
-            y: 63
+            x: 132
+            y: 80
             //opacity: 1
             opacity: speedValue > 20 ? 1 : 0
             source: "../images/big/tacho/3.png"
@@ -302,8 +302,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_4
-            x: 194
-            y: 40
+            x: 196
+            y: 57
             //opacity: 1
             opacity: speedValue > 30 ? 1 : 0
             source: "../images/big/tacho/4.png"
@@ -313,8 +313,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_5
-            x: 256
-            y: 20
+            x: 266
+            y: 35
             //opacity: 1
             opacity: speedValue > 40 ? 1 : 0
             source: "../images/big/tacho/5.png"
@@ -324,8 +324,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_6
-            x: 322
-            y: 18
+            x: 332
+            y: 33
             //opacity: 1
             opacity: speedValue > 50 ? 1 : 0
             source: "../images/big/tacho/6.png"
@@ -335,8 +335,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_7
-            x: 398
-            y: 18
+            x: 408
+            y: 33
             //opacity: 1
             opacity: speedValue > 60 ? 1 : 0
             source: "../images/big/tacho/6.png"
@@ -346,8 +346,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_8
-            x: 474
-            y: 18
+            x: 484
+            y: 33
             //opacity: 1
             opacity: speedValue > 75 ? 1 : 0
             source: "../images/big/tacho/6.png"
@@ -357,8 +357,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_10
-            x: 556
-            y: 18
+            x: 566
+            y: 33
             opacity: speedValue > 90 ? 1 : 0
             source: "../images/big/tacho/6.png"
             scale: 0.8
@@ -367,8 +367,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_11
-            x: 632
-            y: 18
+            x: 642
+            y: 33
             //opacity: 1
             opacity: speedValue > 100 ? 1 : 0
             source: "../images/big/tacho/6.png"
@@ -378,8 +378,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_12
-            x: 826
-            y: 20
+            x: 732
+            y: 36
             //opacity: 1
             opacity: speedValue > 110 ? 1 : 0
             source: "../images/big/tacho/5.png"
@@ -390,8 +390,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_13
-            x: 894
-            y: 31
+            x: 800
+            y: 47
             //opacity: 1
             opacity: speedValue > 115 ? 1 : 0
             source: "../images/big/tacho/4.png"
@@ -402,8 +402,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_14
-            x: 958
-            y: 54
+            x: 864
+            y: 70
             //opacity: 1
             opacity: speedValue > 120 ? 1 : 0
             source: "../images/big/tacho/3.png"
@@ -414,8 +414,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_15
-            x: 1022
-            y: 83
+            x: 928
+            y: 99
             //opacity: 1
             opacity: speedValue > 125 ? 1 : 0
             source: "../images/big/tacho/2.png"
@@ -426,8 +426,8 @@ Rectangle {
 
         RpmSegment {
             id: segment_16
-            x: 1085
-            y: 112
+            x: 991
+            y: 128
             //opacity: 1
             opacity: speedValue > 130 ? 1 : 0
             source: "../images/big/tacho/1.png"
@@ -484,13 +484,14 @@ Rectangle {
         y: 167
         width: 431
         height: 195
-        trackTitle: "Drive (feat. Night)"
-        trackArtist: "Midnight Club"
+        //trackTitle:
+        //trackArtist:
         totalPlaybackDuration: 223
         currentPlaybackTime: 0
         currentIndex: 0
         albumFillMode: Image.PreserveAspectCrop
-        autoProgress: true // 자동 증가 on/off
+        //autoProgress: true // 자동 증가 on/off
+        isPlaying: true
     }
     ModeToggleIcon {
         id: modeBtn

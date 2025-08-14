@@ -12,6 +12,7 @@ Item {
 
     Text {
         id: textValue
+
         text: speed // speedValue? ???? ??
         color: "#ffffff"
         anchors.centerIn: parent

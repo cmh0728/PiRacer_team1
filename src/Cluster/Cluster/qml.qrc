@@ -3,16 +3,18 @@
         <file>content/App.qml</file>
         <file>content/Screen01.ui.qml</file>
         <file>content/Screen02.ui.qml</file>
-	    <file>content/ModeToggleIcon.ui.qml</file>
-	    <file>content/ClipImage.ui.qml</file>
-	    <file>content/MusicToggleButton.ui.qml</file>
-	    <file>content/PlayList.ui.qml</file>
-	    <file>content/RpmSegment.ui.qml</file>
-	    <file>content/Tacho.ui.qml</file>
+        <file>content/ModeToggleIcon.ui.qml</file>
+        <file>content/ClipImage.ui.qml</file>
+        <file>content/MusicToggleButton.ui.qml</file>
+        <file>content/PlayList.ui.qml</file>
+        <file>content/RpmSegment.ui.qml</file>
+        <file>content/Tacho.ui.qml</file>
+
         <file>imports/Cluster/Constants.qml</file>
         <file>imports/Cluster/EventListModel.qml</file>
         <file>imports/Cluster/EventListSimulator.qml</file>
         <file>imports/Cluster/DirectoryFontLoader.qml</file>
+
         <file>images/battery.png</file>
         <file>images/bg-mask.png</file>
         <file>images/car-highlights.png</file>
@@ -23,6 +25,7 @@
         <file>images/highlight-standard-sport.png</file>
         <file>images/red-border-left.png</file>
         <file>images/red-border-right.png</file>
+
         <file>images/albums/195.jpg</file>
         <file>images/albums/2020.jpg</file>
         <file>images/albums/aerosmith.jpg</file>
@@ -58,6 +61,7 @@
         <file>images/albums/slippery.jpg</file>
         <file>images/albums/visions.jpg</file>
         <file>images/albums/waves.jpg</file>
+
         <file>images/big/bg/main.png</file>
         <file>images/big/bg/tacho_frame_up.png</file>
         <file>images/big/tacho/1.png</file>
@@ -66,12 +70,13 @@
         <file>images/big/tacho/4.png</file>
         <file>images/big/tacho/5.png</file>
         <file>images/big/tacho/6.png</file>
+
         <file>images/big/welcome/left-lines.png</file>
         <file>images/big/welcome/right-lines.png</file>
         <file>images/big/welcome/road.png</file>
         <file>images/big/welcome/tacho-bottom-line.png</file>
         <file>images/big/welcome/tacho-top-line.png</file>
+
         <file>qtquickcontrols2.conf</file>
     </qresource>
 </RCC>
-
