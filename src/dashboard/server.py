@@ -14,7 +14,7 @@ except ImportError:
 
 
 # ====== 카메라 관련 기본 설정 ======
-width, height = 640, 480          # 영상 해상도
+width, height = 320, 240          # 영상 해상도
 fps = 30                          # 프레임 속도
 frame_size = width * height * 3 // 2  # YUV420 한 프레임 크기
 
@@ -53,7 +53,9 @@ def start_camera():
         # Raspberry Pi 카메라 사용
         if rpicam is None or rpicam.poll() is not None:
             rpicam = subprocess.Popen([
-                'rpicam-vid',
+                'rpicam-vid'
+                '--inline',
+                '--flush',
                 '--width', str(width),
                 '--height', str(height),
                 '--framerate', str(fps),
@@ -107,13 +109,14 @@ def frame_generator():
             # YUV420 포맷의 한 프레임 읽기
             raw = rpicam.stdout.read(frame_size)
             if not raw or len(raw) < frame_size:
-                break
+                continue
             # NumPy 배열 변환 및 BGR로 변환
             yuv = np.frombuffer(raw, dtype=np.uint8).reshape((height * 3 // 2, width))
             bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
             bgr = cv2.rotate(bgr, cv2.ROTATE_180)  # Pi 카메라 180도 회전
             ok, jpeg = cv2.imencode('.jpg', bgr, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
             if not ok:
+                print("CV JPEG incoding error ")
                 continue
             # MJPEG 스트리밍 포맷으로 전송
             yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
@@ -123,6 +126,7 @@ def frame_generator():
             ok, bgr = cap.read()
             if not ok:
                 break
+
             ok, jpeg = cv2.imencode('.jpg', bgr, [int(cv2.IMWRITE_JPEG_QUALITY), 80])
             if not ok:
                 continue
@@ -185,7 +189,6 @@ def telemetry_loop():
 # ====== 메인 함수 ======
 def main():
     print("Server on: http://0.0.0.0:8080")
-    
     start_camera()  # 카메라 초기화
     socketio.start_background_task(telemetry_loop)  # 텔레메트리 송신 쓰레드 시작
     socketio.run(app, host='0.0.0.0', port=8080)    # Flask+SocketIO 서버 실행
