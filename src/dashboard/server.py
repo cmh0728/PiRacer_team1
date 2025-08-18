@@ -53,7 +53,7 @@ def start_camera():
         # Raspberry Pi 카메라 사용
         if rpicam is None or rpicam.poll() is not None:
             rpicam = subprocess.Popen([
-                'rpicam-vid'
+                'rpicam-vid',
                 '--inline',
                 '--flush',
                 '--width', str(width),
