@@ -14,7 +14,7 @@ except ImportError:
 
 
 # ====== 카메라 관련 기본 설정 ======
-width, height = 320, 240          # 영상 해상도
+width, height = 640 , 480          # 영상 해상도
 fps = 30                          # 프레임 속도
 frame_size = width * height * 3 // 2  # YUV420 한 프레임 크기
 
