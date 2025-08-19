@@ -145,36 +145,32 @@ void CanReceiver::readBattery()
     uint8_t buf[2] = {0};
     if (::read(m_i2c_fd, buf, 2) != 2) return;
 
-    // 전압 계산
     uint16_t raw16 = (uint16_t(buf[0]) << 8) | uint16_t(buf[1]);
     int16_t raw12  = raw16 >> 3;
     qreal voltage  = raw12 * 0.004;  // V
 
-    // 퍼센트 변환 (9.0V ~ 12.6V 범위)
     static constexpr qreal MIN_V = 9.0, MAX_V = 12.6;
     qreal pct = (voltage - MIN_V) / (MAX_V - MIN_V) * 100.0;
-    int percent = std::lround(qBound<qreal>(0, pct, 100));
+    int newPercent = std::lround(qBound<qreal>(0, pct, 100));
 
-    if (percent != m_batteryPercent) {
-        m_batteryPercent = percent;
-        emit batteryChanged();
+    bool changed = (newPercent != m_batteryPercent);
+    m_batteryPercent = newPercent;
+    if (changed) emit batteryChanged();
 
-        // ===== CAN 송신 (0x102) =====
-        if (m_txSocket >= 0) {
-            struct can_frame txFrame {};
-            txFrame.can_id  = 0x102;
-            txFrame.can_dlc = 1;
-            txFrame.data[0] = static_cast<uint8_t>(m_batteryPercent);
+    // 🔁 항상 송신 (주기 3초)
+    if (m_txSocket >= 0) {
+        struct can_frame txFrame {};
+        txFrame.can_id  = 0x102;
+        txFrame.can_dlc = 1;
+        txFrame.data[0] = static_cast<uint8_t>(m_batteryPercent);
 
-            int nbytes = ::write(m_txSocket, &txFrame, sizeof(txFrame));
-            if (nbytes != sizeof(txFrame)) {
-                perror("CAN send battery");
-            } else {
-                qDebug() << "[Battery]" << m_batteryPercent << "% sent via CAN(0x102)";
-            }
+        int nbytes = ::write(m_txSocket, &txFrame, sizeof(txFrame));
+        if (nbytes != sizeof(txFrame)) {
+            perror("CAN send battery");
         }
     }
 }
+
 
 void CanReceiver::setRpm(int value) {
     if (m_rpm != value) {
