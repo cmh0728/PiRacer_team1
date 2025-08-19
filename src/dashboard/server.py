@@ -5,6 +5,10 @@ from flask import Flask, Response, request
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
+# socket 통신함수관련 
+import eventlet
+eventlet.monkey_patch()
+
 # =====(선택) python-can 임포트 =====
 try:
     import can
@@ -280,7 +284,14 @@ def telemetry_loop():
                     telemetry["speed"] = int(round(cm_per_sec))
                 elif msg.arbitration_id == 0x101 and msg.dlc >= 1:
                     gear_val = int(msg.data[0])
-                    telemetry["gear"] = gear_val
+                    if gear_val == 0 : 
+                        telemetry["gear"] = "N"
+                    elif gear_val == 1 : 
+                        telemetry["gear"] = "D"
+                    elif gear_val == 2 : 
+                        telemetry["gear"] = "R"
+                    elif gear_val == 3 : 
+                        telemetry["gear"] = "P"
                 elif msg.arbitration_id == 0x102 and msg.dlc >= 1:
                     telemetry["battery"] = int(msg.data[0])
 
