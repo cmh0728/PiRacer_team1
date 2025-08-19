@@ -43,7 +43,6 @@ def main():
                 print("PDC is on working")
                 throttle = 0.0
                 gear = GEAR_PARKING # P will be edit later ( in pdc project )
-
             else:
                 throttle = 0.0
                 gear     = GEAR_NEUTRAL # N

@@ -16,7 +16,7 @@ except ImportError:
     can = None
 
 # ================== 설정 ==================
-WIDTH, HEIGHT = 320, 240
+WIDTH, HEIGHT = 640, 480 
 FPS = 30
 ROTATE_180 = True              # 필요 시 카메라 180도 회전
 JPEG_QUALITY = 80
@@ -269,7 +269,7 @@ def telemetry_loop():
         # 데모/유휴 모드: 너무 시끄럽지 않게 그대로 유지 or 간단 샘플
         while True:
             # 필요하면 여기서 샘플 값 업데이트
-            time.sleep(0.2)
+            socketio.sleep(0.2)
     else:
         bus = can.interface.Bus(channel="can0", interface="socketcan")
         last_emit = 0.0
