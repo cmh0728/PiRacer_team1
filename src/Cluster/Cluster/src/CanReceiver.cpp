@@ -10,6 +10,7 @@
 #include <net/if.h>
 #include <linux/can.h>
 #include <linux/can/raw.h>
+#include <linux/i2c-dev.h>
 
 // This class reads CAN data (rpm, speed, gear) and also
 // reads battery voltage over I2C, converts to % and sends it via CAN (0x102)
