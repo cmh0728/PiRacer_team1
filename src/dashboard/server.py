@@ -64,6 +64,7 @@ def start_camera():
                 '--nopreview',        # 미리보기 비활성화
                 '-o', '-'             # 표준출력으로 전송
             ], stdout=subprocess.PIPE, preexec_fn=os.setsid)
+            Print("Camera is started!!!")
             atexit.register(stop_camera)  # 프로그램 종료 시 카메라 정리
     else:
         # 일반 PC/Mac 웹캠 사용
@@ -156,6 +157,7 @@ def telemetry_loop():
     if can is None:
         pass
     else:
+        print("CAN telemetry is open!")
         bus = can.interface.Bus(channel='can0', interface='socketcan')
         last_emit = 0
         while True:
