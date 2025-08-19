@@ -17,29 +17,27 @@
 CanReceiver::CanReceiver(QObject *parent)
     : QObject(parent)
 {
-    // 1) CAN 소켓 생성
+    // 1) CAN 수신 소켓 생성
     m_socket = ::socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (m_socket < 0) {
-        perror("Socket");
+        perror("Socket RX");
         return;
     }
 
-    // 2) 논블로킹 모드 설정
+    // 논블로킹 모드
     int flags = fcntl(m_socket, F_GETFL, 0);
-    if (flags < 0) {
-        perror("fcntl F_GETFL");
-    } else {
+    if (flags >= 0) {
         if (fcntl(m_socket, F_SETFL, flags | O_NONBLOCK) < 0)
-            perror("fcntl F_SETFL O_NONBLOCK");
+            perror("fcntl RX O_NONBLOCK");
     }
 
-    // 3) 인터페이스 바인딩
+    // 인터페이스 바인딩 (수신용)
     struct ifreq ifr {};
-    strncpy(ifr.ifr_name, "can0", IFNAMSIZ - 1);   // ✅ 인터페이스 이름 지정
+    strncpy(ifr.ifr_name, "can0", IFNAMSIZ - 1);
     ifr.ifr_name[IFNAMSIZ - 1] = '\0';
 
     if (ioctl(m_socket, SIOCGIFINDEX, &ifr) < 0) {
-        perror("SIOCGIFINDEX");
+        perror("SIOCGIFINDEX RX");
         ::close(m_socket);
         m_socket = -1;
         return;
@@ -49,28 +47,53 @@ CanReceiver::CanReceiver(QObject *parent)
     addr.can_family  = AF_CAN;
     addr.can_ifindex = ifr.ifr_ifindex;
     if (::bind(m_socket, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
-        perror("bind");
+        perror("bind RX");
         ::close(m_socket);
         m_socket = -1;
         return;
     }
 
-    // 4) QSocketNotifier 생성: 수신 준비되면 readCan() 호출
+    // QSocketNotifier → 수신 이벤트 처리
     m_canNotifier = new QSocketNotifier(m_socket, QSocketNotifier::Read, this);
     connect(m_canNotifier, &QSocketNotifier::activated,
             this, &CanReceiver::readCan);
 
-    // 5) 배터리 I2C 설정
+    // 2) CAN 송신 소켓 생성
+    m_txSocket = ::socket(PF_CAN, SOCK_RAW, CAN_RAW);
+    if (m_txSocket < 0) {
+        perror("Socket TX");
+    } else {
+        struct ifreq ifr_tx {};
+        strncpy(ifr_tx.ifr_name, "can0", IFNAMSIZ - 1);
+        ifr_tx.ifr_name[IFNAMSIZ - 1] = '\0';
+
+        if (ioctl(m_txSocket, SIOCGIFINDEX, &ifr_tx) < 0) {
+            perror("SIOCGIFINDEX TX");
+            ::close(m_txSocket);
+            m_txSocket = -1;
+        } else {
+            struct sockaddr_can addr_tx {};
+            addr_tx.can_family  = AF_CAN;
+            addr_tx.can_ifindex = ifr_tx.ifr_ifindex;
+            if (::bind(m_txSocket, (struct sockaddr*)&addr_tx, sizeof(addr_tx)) < 0) {
+                perror("bind TX");
+                ::close(m_txSocket);
+                m_txSocket = -1;
+            }
+        }
+    }
+
+    // 3) 배터리 I2C 설정
     const char* i2cDev = "/dev/i2c-1";
     m_i2c_fd = ::open(i2cDev, O_RDWR);
     if (m_i2c_fd < 0 || ioctl(m_i2c_fd, I2C_SLAVE, 0x41) < 0) {
         perror("I2C open/addr");
     }
 
-    // 6) 배터리 주기적 읽기 타이머
+    // 4) 배터리 주기적 읽기 타이머
     m_battTimer = new QTimer(this);
     connect(m_battTimer, &QTimer::timeout, this, &CanReceiver::readBattery);
-    m_battTimer->start(3000);  // 3초마다 읽기
+    m_battTimer->start(3000);  // 3초마다
 }
 
 void CanReceiver::readCan()
@@ -90,8 +113,8 @@ void CanReceiver::readCan()
         setRpm(rpmValue);
 
         // 속도 계산 (cm/s)
-        constexpr qreal WHEEL_DIAM_CM = 6.8;            // cm
-        qreal circumference = M_PI * WHEEL_DIAM_CM;     // cm/rev
+        constexpr qreal WHEEL_DIAM_CM = 6.8;           // cm
+        qreal circumference = M_PI * WHEEL_DIAM_CM;    // cm/rev
         qreal rev_per_sec = rpmValue / 60.0;
         int cms = qRound(rev_per_sec * circumference);
 
@@ -136,15 +159,17 @@ void CanReceiver::readBattery()
         emit batteryChanged();
 
         // ===== CAN 송신 (0x102) =====
-        if (m_socket >= 0) {
+        if (m_txSocket >= 0) {
             struct can_frame txFrame {};
             txFrame.can_id  = 0x102;
             txFrame.can_dlc = 1;
             txFrame.data[0] = static_cast<uint8_t>(m_batteryPercent);
 
-            int nbytes = ::write(m_socket, &txFrame, sizeof(txFrame));
+            int nbytes = ::write(m_txSocket, &txFrame, sizeof(txFrame));
             if (nbytes != sizeof(txFrame)) {
                 perror("CAN send battery");
+            } else {
+                qDebug() << "[Battery]" << m_batteryPercent << "% sent via CAN(0x102)";
             }
         }
     }
