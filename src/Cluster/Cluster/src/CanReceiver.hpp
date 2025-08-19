@@ -7,7 +7,6 @@
 class CanReceiver : public QObject
 {
     Q_OBJECT
-
     Q_PROPERTY(int rpm READ rpm NOTIFY rpmChanged)
     Q_PROPERTY(int speed READ speed NOTIFY speedChanged)
     Q_PROPERTY(int batteryPercent READ batteryPercent NOTIFY batteryChanged)
@@ -15,8 +14,9 @@ class CanReceiver : public QObject
 
 public:
     explicit CanReceiver(QObject *parent = nullptr);
+    ~CanReceiver();
 
-    // Getter
+    // Getters
     int rpm() const { return m_rpm; }
     int speed() const { return m_speed; }
     int batteryPercent() const { return m_batteryPercent; }
@@ -30,15 +30,14 @@ signals:
 
 private slots:
     void readCan();       // CAN 수신 처리
-    void readBattery();   // I2C 배터리 읽기 및 CAN 송신
+    void readBattery();   // I2C 배터리 읽기 + CAN 송신(0x102)
 
 private:
     void setRpm(int value);
 
     // CAN 소켓
-    int m_socket = -1;       // RX용
-    int m_txSocket = -1;     // TX용
-
+    int m_socket   = -1;  // RX
+    int m_txSocket = -1;  // TX
     QSocketNotifier *m_canNotifier = nullptr;
 
     // I2C
@@ -47,7 +46,7 @@ private:
 
     // 상태 값
     int m_rpm = 0;
-    int m_speed = 0;
-    int m_batteryPercent = 0;
+    int m_speed = 0;            // cm/s
+    int m_batteryPercent = 0;   // %
     int m_gear = 0;
 };
