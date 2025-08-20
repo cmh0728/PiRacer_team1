@@ -205,7 +205,7 @@ void CanReceiver::readBattery()
     bool isRestLike = (std::fabs(i_mA) < 100.0) && ((dv / dt) < 0.005);
     m_restT = isRestLike ? (m_restT + dt) : 0.0;
 
-    static constexpr double CAPACITY_mAh = 3100.0;
+    static constexpr double CAPACITY_mAh = 3200.0;
     double delta_mAh = (i_mA * dt) / 3600.0;
     double deltaSOC  = (delta_mAh / CAPACITY_mAh) * 100.0;
     m_soc -= deltaSOC;                              
