@@ -189,15 +189,40 @@ void CanReceiver::readBattery()
     // 12-bit 값으로 전압 환산
     uint16_t raw16 = (uint16_t(buf[0]) << 8) | uint16_t(buf[1]);
     int16_t raw12  = raw16 >> 3;
-    qreal voltage  = raw12 * 0.004;  // V
+    qreal voltage  = raw12 * 0.004;  // [V]
 
-    // 9.0V ~ 12.6V → 0~100%
-    static constexpr qreal MIN_V = 9.0, MAX_V = 12.6;
-    qreal pct = (voltage - MIN_V) / (MAX_V - MIN_V) * 100.0;
-    int newPercent = std::lround(qBound<qreal>(0, pct, 100));
+    // ============================
+    // Li-ion OCV-SOC 근사 LUT (셀 기준)
+    // ============================
+    static const std::vector<std::pair<double,int>> ocvLut = {
+        {4.20, 100}, {4.10, 90}, {3.95, 80}, {3.87, 70},
+        {3.83, 60},  {3.80, 50}, {3.75, 40}, {3.70, 30},
+        {3.65, 20},  {3.50, 10}, {3.35, 0}   // 0%는 3.3~3.4V 근사
+    };
 
-    bool changed = (newPercent != m_batteryPercent);
-    m_batteryPercent = newPercent;
+    // 현재 시스템은 3직렬 팩이므로 셀 전압 환산
+    qreal cellVoltage = voltage / 3.0;
+
+    // LUT에서 SOC 찾기 (선형 보간)
+    int soc = 0;
+    if (cellVoltage >= ocvLut.front().first) {
+        soc = ocvLut.front().second;
+    } else if (cellVoltage <= ocvLut.back().first) {
+        soc = ocvLut.back().second;
+    } else {
+        for (size_t i = 1; i < ocvLut.size(); ++i) {
+            if (cellVoltage > ocvLut[i].first) {
+                double v1 = ocvLut[i-1].first, v2 = ocvLut[i].first;
+                int s1 = ocvLut[i-1].second, s2 = ocvLut[i].second;
+                double t = (cellVoltage - v2) / (v1 - v2);
+                soc = static_cast<int>(std::lround(s2 + t * (s1 - s2)));
+                break;
+            }
+        }
+    }
+
+    bool changed = (soc != m_batteryPercent);
+    m_batteryPercent = soc;
     if (changed) emit batteryChanged();
 
     // ⚠ 항상 주기 송신 (변화 없어도 candump/server에서 보이도록)
@@ -210,14 +235,12 @@ void CanReceiver::readBattery()
         int written = ::write(m_txSocket, &tx, sizeof(tx));
         if (written != sizeof(tx)) {
             perror("CAN send battery (0x102)");
-        } else {
-            // 디버그 로그
-            // qDebug() << "[BAT TX]" << m_batteryPercent << "% (V=" << voltage << ")";
         }
     } else {
         qWarning() << "[BAT TX] m_txSocket invalid. Battery=" << m_batteryPercent << "%";
     }
 }
+
 
 void CanReceiver::setRpm(int value)
 {
