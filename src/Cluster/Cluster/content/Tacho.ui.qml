@@ -12,7 +12,8 @@ Item {
 
     Text {
         id: textValue
-        text: speed // speedValue는 외부에서 전달
+
+        text: speed // speedValue? ???? ??
         color: "#ffffff"
         anchors.centerIn: parent
         font.pixelSize: 149
