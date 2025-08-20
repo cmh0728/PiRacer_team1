@@ -8,6 +8,7 @@
 #include <cerrno>
 #include <cmath>
 #include <cstring>
+#include <algorithm>  // std::clamp
 
 #include <sys/ioctl.h>
 #include <net/if.h>
@@ -16,7 +17,7 @@
 #include <linux/can/raw.h>
 #include <linux/i2c-dev.h>
 
-// 송신/수신 공통: can0 이름을 SIOCGIFINDEX로 변환
+// Bind CAN socket to interface
 static bool bindCanSocketTo(const char* ifname, int sock)
 {
     struct ifreq ifr {};
@@ -42,21 +43,19 @@ static bool bindCanSocketTo(const char* ifname, int sock)
 CanReceiver::CanReceiver(QObject *parent)
     : QObject(parent)
 {
-    // ===== 1) CAN 수신 소켓 =====
+    // CAN RX socket
     m_socket = ::socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (m_socket < 0) {
         perror("Socket RX");
         return;
     }
 
-    // 논블로킹
     int flags = fcntl(m_socket, F_GETFL, 0);
     if (flags >= 0) {
         if (fcntl(m_socket, F_SETFL, flags | O_NONBLOCK) < 0)
             perror("fcntl RX O_NONBLOCK");
     }
 
-    // 자신이 보낸 프레임도 수신 소켓에서 받도록(디바이스 loopback이 꺼져있어도 방지용)
     {
         int recv_own = 1;
         if (setsockopt(m_socket, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS, &recv_own, sizeof(recv_own)) < 0) {
@@ -70,22 +69,19 @@ CanReceiver::CanReceiver(QObject *parent)
         return;
     }
 
-    // 수신 이벤트 처리
     m_canNotifier = new QSocketNotifier(m_socket, QSocketNotifier::Read, this);
     connect(m_canNotifier, &QSocketNotifier::activated,
             this, &CanReceiver::readCan);
 
-    // ===== 2) CAN 송신 소켓 =====
+    // CAN TX socket
     m_txSocket = ::socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (m_txSocket < 0) {
         perror("Socket TX");
     } else {
-        // 송신 소켓도 같은 인터페이스로 바인딩
         if (!bindCanSocketTo("can0", m_txSocket)) {
             ::close(m_txSocket);
             m_txSocket = -1;
         } else {
-            // (옵션) 송신 소켓도 자기 프레임 에코 받기 원하면 켜둠
             int recv_own = 1;
             if (setsockopt(m_txSocket, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS, &recv_own, sizeof(recv_own)) < 0) {
                 perror("setsockopt CAN_RAW_RECV_OWN_MSGS (TX)");
@@ -93,7 +89,7 @@ CanReceiver::CanReceiver(QObject *parent)
         }
     }
 
-    // ===== 3) 배터리 I2C 설정 =====
+    // I2C init
     const char* i2cDev = "/dev/i2c-1";
     m_i2c_fd = ::open(i2cDev, O_RDWR);
     if (m_i2c_fd < 0) {
@@ -104,10 +100,12 @@ CanReceiver::CanReceiver(QObject *parent)
         m_i2c_fd = -1;
     }
 
-    // ===== 4) 배터리 주기적 읽기 =====
+    // Battery periodic read
     m_battTimer = new QTimer(this);
     connect(m_battTimer, &QTimer::timeout, this, &CanReceiver::readBattery);
-    m_battTimer->start(3000);  // 3초마다
+    m_battTimer->start(3000);
+
+    m_lastUpdate.start();
 }
 
 CanReceiver::~CanReceiver()
@@ -147,9 +145,8 @@ void CanReceiver::readCan()
         int rpmValue = (frame.data[0] << 8) | frame.data[1];
         setRpm(rpmValue);
 
-        // cm/s 계산 (바퀴 지름 6.8 cm)
         constexpr qreal WHEEL_DIAM_CM = 6.8;
-        qreal circumference = M_PI * WHEEL_DIAM_CM;   // cm/rev
+        qreal circumference = M_PI * WHEEL_DIAM_CM;   
         qreal rev_per_sec   = rpmValue / 60.0;
         int cms = qRound(rev_per_sec * circumference);
 
@@ -157,21 +154,18 @@ void CanReceiver::readCan()
             m_speed = cms;
             emit speedChanged();
         }
-        // qDebug() << "[CAN RX] 0x100 RPM=" << rpmValue << "Speed=" << m_speed << "cm/s";
     }
-    // 기어 (0x101)
+    // Gear (0x101)
     else if ((frame.can_id & CAN_EFF_FLAG) == 0 && frame.can_id == 0x101 && frame.can_dlc >= 1) {
         int newGear = frame.data[0];
         if (newGear != m_gear) {
             m_gear = newGear;
             emit gearChanged();
         }
-        // qDebug() << "[CAN RX] 0x101 Gear=" << m_gear;
     }
-    // 배터리 에코 확인용 (0x102)
+    // Battery echo (0x102)
     else if ((frame.can_id & CAN_EFF_FLAG) == 0 && frame.can_id == 0x102 && frame.can_dlc >= 1) {
-        // 로컬 echo가 켜져있으면 여기로도 들어옴
-        // qDebug() << "[CAN RX] 0x102 Battery Echo=" << int(frame.data[0]) << "%";
+        // local echo
     }
 }
 
@@ -179,56 +173,84 @@ void CanReceiver::readBattery()
 {
     if (m_i2c_fd < 0) return;
 
-    // INA219 Bus Voltage Register (0x02) 읽기
+    // Bus Voltage (0x02, LSB=4mV)
     uint8_t reg = 0x02;
     if (::write(m_i2c_fd, &reg, 1) != 1) return;
-
     uint8_t buf[2] = {0};
     if (::read(m_i2c_fd, buf, 2) != 2) return;
 
-    // 12-bit 값으로 전압 환산
     uint16_t raw16 = (uint16_t(buf[0]) << 8) | uint16_t(buf[1]);
-    int16_t raw12  = raw16 >> 3;
-    qreal voltage  = raw12 * 0.004;  // [V]
+    int16_t  raw12 = raw16 >> 3;            
+    double   v_pack = raw12 * 0.004;        
 
-    // ============================
-    // Li-ion OCV-SOC 근사 LUT (셀 기준)
-    // ============================
-    static const std::vector<std::pair<double,int>> ocvLut = {
-        {4.20, 100}, {4.10, 90}, {3.95, 80}, {3.87, 70},
-        {3.83, 60},  {3.80, 50}, {3.75, 40}, {3.70, 30},
-        {3.65, 20},  {3.50, 10}, {3.35, 0}   // 0%는 3.3~3.4V 근사
-    };
+    // Shunt Voltage (0x01, LSB=10µV)
+    reg = 0x01;
+    if (::write(m_i2c_fd, &reg, 1) != 1) return;
+    if (::read(m_i2c_fd, &buf[0], 2) != 2) return;
+    int16_t rawShunt = (int16_t(buf[0] << 8) | buf[1]);
+    double  v_shunt  = rawShunt * 10e-6;    
+    double  i_amps   = v_shunt / 0.1;       
+    double  i_mA     = i_amps * 1000.0;     
 
-    // 현재 시스템은 3직렬 팩이므로 셀 전압 환산
-    qreal cellVoltage = voltage / 3.0;
+    double dt = m_lastUpdate.isValid() ? (m_lastUpdate.restart() / 1000.0) : 0.0;
+    if (dt <= 0.0) { dt = 0.001; m_lastUpdate.start(); }
 
-    // LUT에서 SOC 찾기 (선형 보간)
-    int soc = 0;
-    if (cellVoltage >= ocvLut.front().first) {
-        soc = ocvLut.front().second;
-    } else if (cellVoltage <= ocvLut.back().first) {
-        soc = ocvLut.back().second;
-    } else {
-        for (size_t i = 1; i < ocvLut.size(); ++i) {
-            if (cellVoltage > ocvLut[i].first) {
-                double v1 = ocvLut[i-1].first, v2 = ocvLut[i].first;
-                int s1 = ocvLut[i-1].second, s2 = ocvLut[i].second;
-                double t = (cellVoltage - v2) / (v1 - v2);
-                soc = static_cast<int>(std::lround(s2 + t * (s1 - s2)));
-                break;
-            }
-        }
+    if (!m_vInit) { m_vFilt = v_pack; m_vInit = true; }
+    else          { m_vFilt = 0.9 * m_vFilt + 0.1 * v_pack; }
+
+    static double prevV = m_vFilt;
+    double dv = std::fabs(m_vFilt - prevV);
+    prevV = m_vFilt;
+
+    bool isRestLike = (std::fabs(i_mA) < 100.0) && ((dv / dt) < 0.005);
+    m_restT = isRestLike ? (m_restT + dt) : 0.0;
+
+    static constexpr double CAPACITY_mAh = 3100.0;
+    double delta_mAh = (i_mA * dt) / 3600.0;
+    double deltaSOC  = (delta_mAh / CAPACITY_mAh) * 100.0;
+    m_soc -= deltaSOC;                              
+    if (m_soc < 0.0)   m_soc = 0.0;
+    if (m_soc > 100.0) m_soc = 100.0;
+
+    // cutoff voltage
+    if (m_vFilt <= 10.0) {
+        m_soc = 0.0;
     }
 
-    bool changed = (soc != m_batteryPercent);
-    m_batteryPercent = soc;
-    if (changed) emit batteryChanged();
+    // OCV correction
+    static const std::vector<std::pair<double,int>> OCV_LUT = {
+    {4.20, 100}, {4.10, 90}, {3.95, 80}, {3.87, 70},
+    {3.83, 60},  {3.80, 50}, {3.75, 40}, {3.70, 30},
+    {3.65, 20},  {3.50, 10}, {3.33, 0}
+    };
 
-    // ⚠ 항상 주기 송신 (변화 없어도 candump/server에서 보이도록)
+    auto ocvToSoc = [&](double v_cell)->int {
+        if (v_cell >= OCV_LUT.front().first) return OCV_LUT.front().second;
+        if (v_cell <= OCV_LUT.back().first)  return OCV_LUT.back().second;
+        for (size_t i = 1; i < OCV_LUT.size(); ++i) {
+            if (v_cell > OCV_LUT[i].first) {
+                double v1 = OCV_LUT[i-1].first, v2 = OCV_LUT[i].first;
+                int    s1 = OCV_LUT[i-1].second, s2 = OCV_LUT[i].second;
+                double t  = (v_cell - v2) / (v1 - v2);
+                return static_cast<int>(std::lround(s2 + t*(s1 - s2)));
+            }
+        }
+        return 0;
+    };
+    if (m_restT > 10.0) {
+        int ocvSoc = ocvToSoc(m_vFilt / 3.0);   
+        m_soc = 0.9 * m_soc + 0.1 * ocvSoc;     
+    }
+
+    int newPercent = static_cast<int>(std::lround(std::clamp(m_soc, 0.0, 100.0)));
+    if (std::abs(newPercent - m_batteryPercent) >= 1) {
+        m_batteryPercent = newPercent;
+        emit batteryChanged();
+    }
+
     if (m_txSocket >= 0) {
         struct can_frame tx {};
-        tx.can_id  = 0x102;     // 표준 11-bit ID
+        tx.can_id  = 0x102;     
         tx.can_dlc = 1;
         tx.data[0] = static_cast<uint8_t>(m_batteryPercent);
 
@@ -240,7 +262,6 @@ void CanReceiver::readBattery()
         qWarning() << "[BAT TX] m_txSocket invalid. Battery=" << m_batteryPercent << "%";
     }
 }
-
 
 void CanReceiver::setRpm(int value)
 {

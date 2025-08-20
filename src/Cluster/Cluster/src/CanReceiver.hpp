@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QSocketNotifier>
 #include <QTimer>
+#include <QElapsedTimer>   // dt check
 
 class CanReceiver : public QObject
 {
@@ -29,13 +30,13 @@ signals:
     void gearChanged();
 
 private slots:
-    void readCan();       // CAN 수신 처리
-    void readBattery();   // I2C 배터리 읽기 + CAN 송신(0x102)
+    void readCan();       // CAN 
+    void readBattery();   // I2C battery + CAN commu(0x102)
 
 private:
     void setRpm(int value);
 
-    // CAN 소켓
+    // CAN socket
     int m_socket   = -1;  // RX
     int m_txSocket = -1;  // TX
     QSocketNotifier *m_canNotifier = nullptr;
@@ -49,4 +50,11 @@ private:
     int m_speed = 0;            // cm/s
     int m_batteryPercent = 0;   // %
     int m_gear = 0;
+
+    // =====  =====
+    double        m_soc      = 100.0; // [%] 
+    QElapsedTimer m_lastUpdate;       // dt 측
+    double        m_vFilt    = 0.0;   // fulter
+    bool          m_vInit    = false; // init
+    double        m_restT    = 0.0;   // [s]
 };
