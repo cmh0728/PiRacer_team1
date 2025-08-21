@@ -13,7 +13,7 @@ function mapToAngle(val: number, max: number) {
 
 export default function App() {
   const t = useTelemetry();
-  const kmh = Math.round((t.speed || 0) * 0.036);
+  const cms = t.speed || 0;
 
   return (
     <div className="min-h-dvh grid place-items-center bg-gray text-slate-900">
@@ -52,7 +52,7 @@ export default function App() {
                     stroke="white"
                     strokeWidth="4"
                     strokeLinecap="round"
-                    transform={`rotate(${mapToAngle(t.rpm || 0, 7000)} 100 110)`}
+                    transform={`rotate(${mapToAngle(t.rpm || 0, 500)} 100 110)`}
                   />
                 </svg>
                 <div className="text-center text-xl font-bold mt-1">
@@ -92,11 +92,11 @@ export default function App() {
                     stroke="white"
                     strokeWidth="4"
                     strokeLinecap="round"
-                    transform={`rotate(${mapToAngle(kmh, 120)} 100 110)`}
+                    transform={`rotate(${mapToAngle(cms, 120)} 100 110)`}
                   />
                 </svg>
                 <div className="text-center text-xl font-bold mt-1">
-                  {kmh} km/h
+                  {cms} cm/s
                 </div>
               </div>
             </div>
@@ -153,7 +153,7 @@ export default function App() {
 
 
             {/* 리셋 버튼 */}
-            <button className="p-4 rounded-2xl bg-red-600 hover:bg-red-700 shadow-lg font-bold text-white text-lg">
+            <button className="p-4 rounded-2xl bg-neutral-800 hover:bg-red-700 shadow-lg font-bold text-neutral-400 text-lg">
               RESET
             </button>
           </div>
