@@ -1,7 +1,7 @@
 # server.py
 import os, time, math, signal, atexit, platform, shutil, subprocess, threading
 import cv2, numpy as np
-from flask import Flask, Response, request
+from flask import Flask, Response, request , jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
@@ -315,6 +315,30 @@ def telemetry_loop():
                 socketio.emit("telemetry", telemetry)
                 last_emit = now
             socketio.sleep(0.01)
+
+@app.route("/api/reset", methods=["POST"])
+def reset():
+    data = request.get_json()
+    password = data.get("password")
+
+    # 입력된 비밀번호로 sudo -S reboot 실행
+    try:
+        # -S : stdin으로 비밀번호 받음
+        proc = subprocess.run(
+            ["sudo", "-S", "reboot"],
+            input=password + "\n",
+            text=True,
+            capture_output=True
+        )
+
+        if proc.returncode == 0:
+            return jsonify({"ok": True}), 200
+        else:
+            # 비번 틀린 경우 stderr에 "Sorry, try again." 메시지 들어옴
+            return jsonify({"ok": False, "error": proc.stderr}), 401
+
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 
 # ================== 엔트리포인트 ==================

@@ -1,4 +1,4 @@
-// src/App.tsx
+import { useState } from "react";
 import useTelemetry from "./hooks/useTelemetry";
 
 function mapToAngle(val: number, max: number) {
@@ -6,21 +6,36 @@ function mapToAngle(val: number, max: number) {
   return -90 + (clamped / max) * 180;
 }
 
-// function gearToLabel(g: string | number) {
-//   if (typeof g === "string") return g;
-//   return ({ 0: "N", 1: "D", 2: "R", 3: "P" } as Record<number, string>)[g] ?? "N";
-// }
-
 export default function App() {
   const t = useTelemetry();
   const cms = t.speed || 0;
+
+  // 🔑 모달/비밀번호 상태
+  const [showModal, setShowModal] = useState(false);
+  const [password, setPassword] = useState("");
+
+  // 🔑 리셋 동작
+  const handleReset = async () => {
+    const res = await fetch("/api/reset", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+
+    if (res.ok) {
+      alert("Rebooting...");
+    } else {
+      alert("Wrong password!");
+    }
+    setShowModal(false);
+    setPassword("");
+  };
 
   return (
     <div className="min-h-dvh grid place-items-center bg-gray text-slate-900">
       {/* 16:9 보드 */}
       <div className="relative w-[min(100vw,177.78vh)] aspect-[19/10] rounded-3xl border bg-neutral-900 shadow">
         <div className="absolute inset-0 p-[2%] grid grid-rows-[auto_60%_1fr] gap-[2%]">
-          
           {/* 팀 배지 */}
           <div>
             <span className="inline-flex items-center rounded-xl px-3 py-1 text-[max(30px,1.4vmin)] text-white font-semibold bg-neutral-800">
@@ -30,20 +45,17 @@ export default function App() {
 
           {/* 상단 3분할: RPM / Camera / Speed */}
           <div className="grid grid-cols-3 gap-[2%]">
-            
-            {/* RPM Gauge (반원 게이지 + 바늘) */}
+            {/* RPM Gauge */}
             <div className="flex items-center justify-center rounded-2xl bg-neutral-800 border shadow-sm">
               <div className="p-4 w-full">
                 <div className="text-sm text-neutral-400">RPM</div>
                 <svg viewBox="0 0 200 120" className="w-full mt-2">
-                  {/* 반원 게이지 배경 */}
                   <path
                     d="M10 110 A90 90 0 0 1 190 110"
                     fill="none"
                     stroke="#333"
                     strokeWidth="12"
                   />
-                  {/* 바늘 */}
                   <line
                     x1="100"
                     y1="110"
@@ -71,19 +83,17 @@ export default function App() {
               />
             </div>
 
-            {/* Speed Gauge (반원 게이지 + 바늘) */}
+            {/* Speed Gauge */}
             <div className="flex items-center justify-center rounded-2xl bg-neutral-800 border shadow-sm">
               <div className="p-4 w-full">
                 <div className="text-sm text-neutral-400">Speed</div>
                 <svg viewBox="0 0 200 120" className="w-full mt-2">
-                  {/* 반원 게이지 배경 */}
                   <path
                     d="M10 110 A90 90 0 0 1 190 110"
                     fill="none"
                     stroke="#333"
                     strokeWidth="12"
                   />
-                  {/* 바늘 */}
                   <line
                     x1="100"
                     y1="110"
@@ -151,14 +161,46 @@ export default function App() {
               <div className="text-4xl font-bold mt-1">{t.gear}</div>
             </div>
 
-
             {/* 리셋 버튼 */}
-            <button className="p-4 rounded-2xl bg-neutral-800 hover:bg-red-700 shadow-lg font-bold text-neutral-400 text-lg">
-              RESET
+            <button
+              onClick={() => setShowModal(true)}
+              className="p-4 rounded-2xl border bg-neutral-800 shadow-sm font-bold text-sm text-neutral-400 text-2xl"
+            >
+              Reboot
             </button>
           </div>
         </div>
       </div>
+
+      {/* 비밀번호 입력 창 모달*/}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+          <div className="bg-neutral-800 p-6 rounded-2xl shadow-lg">
+            <h2 className="text-white font-bold mb-3">Enter Password</h2>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-2 rounded bg-neutral-700 text-white"
+              placeholder="Password"
+            />
+            <div className="flex justify-end mt-4 gap-2">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 rounded bg-gray-600 text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReset}
+                className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
