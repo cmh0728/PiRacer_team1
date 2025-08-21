@@ -32,8 +32,8 @@ def main():
     except RuntimeError:
         pass  
 
-    p1 = Process(target=cam.main)
-    #p1 = Process(target=sv.main)
+    #p1 = Process(target=cam.main)
+    p1 = Process(target=sv.main)
     p2 = Process(target=rm_control.main)
     p3 = Process(target=run_cluster,name="head_u")
 
