@@ -5,6 +5,8 @@ from flask import Flask, Response, request
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
+import psutil, socket # for cpu usages
+
 # socket 통신함수관련 
 import eventlet
 eventlet.monkey_patch()
@@ -263,12 +265,23 @@ telemetry = {
     "battery": 0,    # %
 }
 
+def check_network(host="8.8.8.8", port=53, timeout=1):
+    try:
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        return True
+    except Exception:
+        return False
+
 def telemetry_loop():
     """python-can 있으면 실제 CAN 읽기, 없으면 no-op/샘플"""
     if can is None:
         # 데모/유휴 모드: 너무 시끄럽지 않게 그대로 유지 or 간단 샘플
         while True:
             # 필요하면 여기서 샘플 값 업데이트
+            telemetry["cpu"] = psutil.cpu_percent()
+            telemetry["net"] = check_network()
+            socketio.emit("telemetry", telemetry)
             socketio.sleep(0.2)
     else:
         bus = can.interface.Bus(channel="can0", interface="socketcan")
@@ -297,6 +310,8 @@ def telemetry_loop():
 
             now = time.time()
             if now - last_emit >= 0.1:
+                telemetry["cpu"] = psutil.cpu_percent()
+                telemetry["net"] = check_network()
                 socketio.emit("telemetry", telemetry)
                 last_emit = now
             socketio.sleep(0.01)
