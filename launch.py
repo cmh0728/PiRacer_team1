@@ -5,19 +5,26 @@ import src.camera_stream.camera_web  as cam #camera streaming
 # import src.control.remote_control as rm_control #remote control
 import src.control.remote_can as rm_control #remote control
 import src.dashboard.server as sv #server code
+import signal
 
 
 CLUSTER_PATH = os.path.join(os.path.dirname(__file__),"src","Cluster","Cluster","build","ClusterApp")
 
+# def run_cluster():
+#     subprocess.run([CLUSTER_PATH],check=False)
+
 def run_cluster():
-    subprocess.run([CLUSTER_PATH],check=False)
+    subprocess.run([CLUSTER_PATH], check=False, preexec_fn=os.setsid)
+
 
 def shutdown(procs):
     for p in procs:
         if p.is_alive():
-            p.terminate()
+            # 프로세스 그룹까지 강제 종료
+            os.killpg(os.getpgid(p.pid), signal.SIGKILL)
     for p in procs:
         p.join()
+
 
 def main():
     try:
@@ -37,7 +44,7 @@ def main():
     # press Ctrl+C to shutdown program
     def handler(sig, frame):
         print("\n[main] stopping...")
-        shutdown([p1, p2])
+        shutdown(all_process)
         sys.exit(0)
 
     signal.signal(signal.SIGINT, handler) #catch Ctrl+c sign
