@@ -162,12 +162,15 @@ export default function App() {
             </div>
 
             {/* 리셋 버튼 */}
-            <button
+            {/* <button
               onClick={() => setShowModal(true)}
               className="p-4 rounded-2xl border bg-neutral-800 shadow-sm font-bold text-sm text-neutral-400 text-2xl"
             >
               Reboot
-            </button>
+            </button> */}
+
+            <button onClick={() => setShowModal(true)} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Reboot</button>
+
           </div>
         </div>
       </div>
@@ -185,18 +188,24 @@ export default function App() {
               placeholder="Password"
             />
             <div className="flex justify-end mt-4 gap-2">
-              <button
+              {/* <button
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 rounded bg-gray-600 text-white"
               >
                 Cancel
-              </button>
-              <button
+              </button> */}
+
+              <button onClick={() => setShowModal(false)} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Cancel</button>
+
+              {/* <button
                 onClick={handleReset}
                 className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white"
               >
                 Confirm
-              </button>
+              </button> */}
+
+              <button onClick={handleReset} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Confirm</button>
+
             </div>
           </div>
         </div>
