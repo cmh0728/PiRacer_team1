@@ -33,7 +33,7 @@ WIDTH, HEIGHT = 640, 480
 FPS = 30
 ROTATE_180 = True              # 필요 시 카메라 180도 회전
 JPEG_QUALITY = 80
-TARGET_MJPEG_FPS = 15          # 브라우저로 내보낼 최대 FPS (WebRTC도 이 값 기준)
+TARGET_MJPEG_FPS = 15          # WebRTC 프레임 타이밍에도 사용 (이름만 MJPEG)
 IDLE_STOP_SEC = 5.0            # 시청자 0명 지속 시 캡처 종료 지연
 
 FRAME_SIZE = WIDTH * HEIGHT * 3 // 2  # YUV420(I420) 한 프레임 바이트 수
@@ -45,7 +45,6 @@ except Exception:
     pass
 
 # Flask / SocketIO
-# 정적 파일은 React 빌드 산출물을 static/에 넣고, index.html도 그 안에 둔다(간단한 방식).
 app = Flask(__name__, static_folder="static", static_url_path="/")
 CORS(app, supports_credentials=True)
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")  # pip install eventlet
@@ -291,55 +290,50 @@ def index():
 def health():
     return {"ok": True, "viewers": active_viewers, "ts": latest_ts}, 200
 
-@app.route("/video_feed")
-def video_feed():
-    """모든 클라이언트에게 최신 JPEG 프레임을 브로드캐스트(MJPEG)"""
-    global active_viewers
-    # 시청자 수 증가 + 캡처 보장
-    with av_lock:
-        active_viewers += 1
-    start_capture_if_needed()
+# ================== (TCP MJPEG 경로 비활성화) ==================
+# @app.route("/video_feed")
+# def video_feed():
+#     """모든 클라이언트에게 최신 JPEG 프레임을 브로드캐스트(MJPEG)"""
+#     global active_viewers
+#     with av_lock:
+#         active_viewers += 1
+#     start_capture_if_needed()
+#
+#     def gen():
+#         last_ts_local = 0.0
+#         per_frame_delay = 1.0 / max(1, TARGET_MJPEG_FPS)
+#         try:
+#             while True:
+#                 with frame_lock:
+#                     buf = latest_jpeg
+#                     ts = latest_ts
+#                 if not buf:
+#                     time.sleep(0.01)
+#                     continue
+#                 if ts <= last_ts_local:
+#                     time.sleep(0.005)
+#                     continue
+#                 chunk = (b"--frame\r\n"
+#                          b"Content-Type: image/jpeg\r\n\r\n" +
+#                          buf + b"\r\n")
+#                 yield chunk
+#                 last_ts_local = ts
+#                 time.sleep(per_frame_delay)
+#         except (BrokenPipeError, ConnectionResetError, GeneratorExit, IOError):
+#             pass
+#         finally:
+#             with av_lock:
+#                 active_viewers = max(0, active_viewers - 1)
+#             stop_capture_if_idle()
+#
+#     headers = {
+#         "Cache-Control": "no-cache, private",
+#         "Pragma": "no-cache",
+#         "Connection": "keep-alive",
+#     }
+#     return Response(gen(), mimetype="multipart/x-mixed-replace; boundary=frame", headers=headers)
 
-    def gen():
-        last_ts_local = 0.0
-        per_frame_delay = 1.0 / max(1, TARGET_MJPEG_FPS)
-        try:
-            while True:
-                # 최신 프레임 대기/획득
-                with frame_lock:
-                    buf = latest_jpeg
-                    ts = latest_ts
-                if not buf:
-                    time.sleep(0.01)
-                    continue
-                if ts <= last_ts_local:
-                    time.sleep(0.005)
-                    continue
-                # 전송
-                chunk = (b"--frame\r\n"
-                         b"Content-Type: image/jpeg\r\n\r\n" +
-                         buf + b"\r\n")
-                yield chunk
-                last_ts_local = ts
-                # 전송 레이트 제한(과도한 전송 방지)
-                time.sleep(per_frame_delay)
-        except (BrokenPipeError, ConnectionResetError, GeneratorExit, IOError):
-            # 클라이언트 이탈(정상)
-            pass
-        finally:
-            # 시청자 수 감소 + 필요 시 캡처 중단 예약
-            with av_lock:
-                active_viewers = max(0, active_viewers - 1)
-            stop_capture_if_idle()
-
-    headers = {
-        "Cache-Control": "no-cache, private",
-        "Pragma": "no-cache",
-        "Connection": "keep-alive",
-    }
-    return Response(gen(), mimetype="multipart/x-mixed-replace; boundary=frame", headers=headers)
-
-# ---- WebRTC 시그널링 (브라우저 → 서버) ----
+# ---- WebRTC 시그널링 (브라우저 → 서버, UDP) ----
 @app.route("/rtc/offer", methods=["POST"])
 def rtc_offer():
     if not AIORTC_OK:
@@ -384,7 +378,6 @@ def check_network(host="8.8.8.8", port=53, timeout=1):
 def telemetry_loop():
     """python-can 있으면 실제 CAN 읽기, 없으면 no-op/샘플"""
     if can is None:
-        # 데모/유휴 모드: 너무 시끄럽지 않게 그대로 유지 or 간단 샘플
         while True:
             telemetry["cpu"] = psutil.cpu_percent()
             telemetry["net"] = check_network()

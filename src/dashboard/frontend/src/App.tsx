@@ -1,9 +1,73 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useTelemetry from "./hooks/useTelemetry";
 
 function mapToAngle(val: number, max: number) {
   const clamped = Math.max(0, Math.min(max, val));
   return -90 + (clamped / max) * 180;
+}
+
+// ---- WebRTC helper (브라우저 ← 서버 단방향 수신, UDP 기반) ----
+async function startWebRTC(videoEl: HTMLVideoElement) {
+  const pc = new RTCPeerConnection({
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  });
+
+  // 서버 → 브라우저 단방향
+  pc.addTransceiver("video", { direction: "recvonly" });
+
+  pc.ontrack = (e) => {
+    videoEl.srcObject = e.streams[0];
+  };
+
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  const res = await fetch("/rtc/offer", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      sdp: pc.localDescription!.sdp,
+      type: pc.localDescription!.type,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(await res.text());
+  }
+
+  const answer = await res.json();
+  await pc.setRemoteDescription(answer);
+  return pc;
+}
+
+// 브라우저 상태 → 우리 UI 상태로 정규화
+type UiConn = "idle" | "connecting" | "connected" | "failed";
+function deriveConnState(pc: RTCPeerConnection): UiConn {
+  const s =
+    (pc.connectionState ||
+      (pc as any).iceConnectionState) as
+      | RTCPeerConnectionState
+      | RTCIceConnectionState
+      | undefined;
+
+  switch (s) {
+    // 연결됨
+    case "connected":
+    case "completed":
+      return "connected";
+    // 연결 중
+    case "connecting":
+    case "checking":
+    case "new":
+      return "connecting";
+    // 실패/끊김/종료
+    case "failed":
+    case "disconnected":
+    case "closed":
+      return "failed";
+    default:
+      return "idle";
+  }
 }
 
 export default function App() {
@@ -13,6 +77,80 @@ export default function App() {
   // 🔑 모달/비밀번호 상태
   const [showModal, setShowModal] = useState(false);
   const [password, setPassword] = useState("");
+
+  // WebRTC 상태
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const pcRef = useRef<RTCPeerConnection | null>(null);
+  const [connState, setConnState] = useState<UiConn>("idle");
+  const [errMsg, setErrMsg] = useState<string | null>(null);
+
+  // 최초 연결 시도
+  useEffect(() => {
+    let mounted = true;
+
+    (async () => {
+      try {
+        setConnState("connecting");
+        setErrMsg(null);
+        if (!videoRef.current) return;
+
+        const pc = await startWebRTC(videoRef.current);
+        if (!mounted) {
+          pc.close();
+          return;
+        }
+        pcRef.current = pc;
+
+        const update = () => setConnState(deriveConnState(pc));
+        pc.onconnectionstatechange = update;
+        pc.oniceconnectionstatechange = update;
+
+        // 초기 상태 반영
+        update();
+      } catch (e: any) {
+        setConnState("failed");
+        setErrMsg(e?.message ?? String(e));
+      }
+    })();
+
+    return () => {
+      mounted = false;
+      if (pcRef.current) {
+        pcRef.current.close();
+        pcRef.current = null;
+      }
+      if (videoRef.current) {
+        (videoRef.current as HTMLVideoElement).srcObject = null;
+      }
+    };
+  }, []);
+
+  const reconnect = async () => {
+    try {
+      // 기존 연결 정리
+      if (pcRef.current) {
+        pcRef.current.close();
+        pcRef.current = null;
+      }
+      if (videoRef.current) {
+        (videoRef.current as HTMLVideoElement).srcObject = null;
+      }
+
+      setConnState("connecting");
+      setErrMsg(null);
+
+      const pc = await startWebRTC(videoRef.current!);
+      pcRef.current = pc;
+
+      const update = () => setConnState(deriveConnState(pc));
+      pc.onconnectionstatechange = update;
+      pc.oniceconnectionstatechange = update;
+      update();
+    } catch (e: any) {
+      setConnState("failed");
+      setErrMsg(e?.message ?? String(e));
+    }
+  };
 
   // 🔑 리셋 동작
   const handleReset = async () => {
@@ -36,10 +174,34 @@ export default function App() {
       {/* 16:9 보드 */}
       <div className="relative w-[min(100vw,177.78vh)] aspect-[19/10] rounded-3xl border bg-neutral-900 shadow">
         <div className="absolute inset-0 p-[2%] grid grid-rows-[auto_60%_1fr] gap-[2%]">
-          {/* 팀 배지 */}
-          <div>
+          {/* 팀 배지 + 연결 상태 */}
+          <div className="flex items-center justify-between">
             <span className="inline-flex items-center rounded-xl px-3 py-1 text-[max(30px,1.4vmin)] text-white font-semibold bg-neutral-800">
               Team1 Dashboard
+            </span>
+            <span
+              className={`inline-flex items-center gap-2 rounded-xl px-3 py-1 text-sm ${
+                connState === "connected"
+                  ? "bg-emerald-600 text-white"
+                  : connState === "connecting"
+                  ? "bg-amber-600 text-white"
+                  : "bg-red-600 text-white"
+              }`}
+            >
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  connState === "connected"
+                    ? "bg-emerald-300"
+                    : connState === "connecting"
+                    ? "bg-amber-300"
+                    : "bg-red-300"
+                }`}
+              />
+              {connState === "connected"
+                ? "WebRTC Connected (UDP)"
+                : connState === "connecting"
+                ? "Connecting…"
+                : "Disconnected"}
             </span>
           </div>
 
@@ -73,14 +235,35 @@ export default function App() {
               </div>
             </div>
 
-            {/* 카메라 스트림 */}
+            {/* 카메라 스트림 (WebRTC only, UDP) */}
             <div className="relative rounded-2xl border overflow-hidden bg-neutral-800">
-              <img
-                id="video"
-                src="/video_feed"
-                alt="camera"
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
                 className="w-full h-full object-cover"
               />
+              {connState === "failed" && (
+                <div className="absolute inset-0 grid place-items-center bg-neutral-900/70">
+                  <div className="text-center">
+                    <div className="text-white font-semibold mb-2">
+                      WebRTC 연결 실패
+                    </div>
+                    {errMsg && (
+                      <div className="text-xs text-neutral-300 mb-3">
+                        {errMsg}
+                      </div>
+                    )}
+                    <button
+                      onClick={reconnect}
+                      className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-900 text-white"
+                    >
+                      Reconnect
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Speed Gauge */}
@@ -119,9 +302,9 @@ export default function App() {
               <div className="text-sm text-neutral-400 mb-2">CPU Usage</div>
               <div className="w-full bg-neutral-700 rounded-full h-3 overflow-hidden">
                 <div
-                  className="bg-indigo-500 h-3 transition-all duration-300"
+                  className="h-3 transition-all duration-300 bg-indigo-500"
                   style={{ width: `${t.cpu ?? 0}%` }}
-                ></div>
+                />
               </div>
               <div className="text-sm text-neutral-300 mt-1">
                 {t.cpu ?? 0} %
@@ -133,9 +316,9 @@ export default function App() {
               <div className="text-sm text-neutral-400 mb-2">Battery</div>
               <div className="w-full bg-neutral-700 rounded-full h-3 overflow-hidden">
                 <div
-                  className="bg-emerald-500 h-3 transition-all duration-300"
+                  className="h-3 transition-all duration-300 bg-emerald-500"
                   style={{ width: `${t.battery}%` }}
-                ></div>
+                />
               </div>
               <div className="text-sm text-neutral-300 mt-1">
                 {t.battery} %
@@ -162,15 +345,13 @@ export default function App() {
             </div>
 
             {/* 리셋 버튼 */}
-            {/* <button
+            <button
               onClick={() => setShowModal(true)}
-              className="p-4 rounded-2xl border bg-neutral-800 shadow-sm font-bold text-sm text-neutral-400 text-2xl"
+              type="button"
+              className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
             >
               Reboot
-            </button> */}
-
-            <button onClick={() => setShowModal(true)} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Reboot</button>
-
+            </button>
           </div>
         </div>
       </div>
@@ -188,24 +369,20 @@ export default function App() {
               placeholder="Password"
             />
             <div className="flex justify-end mt-4 gap-2">
-              {/* <button
+              <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 rounded bg-gray-600 text-white"
+                type="button"
+                className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
               >
                 Cancel
-              </button> */}
-
-              <button onClick={() => setShowModal(false)} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Cancel</button>
-
-              {/* <button
+              </button>
+              <button
                 onClick={handleReset}
-                className="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white"
+                type="button"
+                className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5"
               >
                 Confirm
-              </button> */}
-
-              <button onClick={handleReset} type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Confirm</button>
-
+              </button>
             </div>
           </div>
         </div>
