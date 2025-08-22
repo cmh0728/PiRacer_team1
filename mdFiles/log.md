@@ -40,6 +40,9 @@
 - **13.08.25**  
   ‣ Sports Mode UI(second) with music player    
 
+- **21.08.25**  
+  ‣ Web interface for real-time vehicle telemetry and control  
+  ‣ update README
 
 
 ## 📋 Future To do

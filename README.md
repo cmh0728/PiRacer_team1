@@ -16,6 +16,8 @@ This is SEA:ME-Team1's repository for distributed embedded system project of SEA
 
 - <ins>[Head Unit](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/HeadUnit.md)</ins>
 
+- <ins>[Dashboard](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/Dashboard.md)</ins>
+
 
 ## DEMO 
 
@@ -94,5 +96,4 @@ you have to check your remote control key mapping
 
 ## Development Log 
 - <ins>[Development Log Update](https://github.com/cmh0728/SEA-ME-DES/blob/main/mdFiles/log.md)</ins>
-
 
