@@ -5,10 +5,12 @@
 - [Cluster GUI](#cluster-gui) 
 - [Hardware](#hardware)
 - [System architecture](#system-architecture)
-- [Build & Run](#build--run--application)
-- [Automize system](#Automize-system)
-- [About CAN communication](#-can-communication)
-- [About Battery](#-battery)
+- [Build & Run](#build--run-application)  
+- [Automize system](#automize-system)
+- [About CAN communication](#can-communication-test)
+- [About Battery](#check-the-battery-voltage)
+
+
 
 ## Cluster GUI(first mode)
 <!-- <p align="center"> -->
@@ -144,6 +146,8 @@ If you want to automize CAN setting , follow down.
 # create new service file
 sudo nano /etc/systemd/system/can0.service 
 ```
+
+
 ```bash
 # paste this file 
 [Unit]
@@ -175,7 +179,7 @@ sudo reboot
 candump can0
 ```
 
-## 🔋 Battery 
+## 🔋 Battery
 ### check the battery voltage
 ```bash
 # bash
