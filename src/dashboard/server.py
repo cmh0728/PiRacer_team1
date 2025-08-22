@@ -1,7 +1,7 @@
-# server.py
+# server.py  (UDP/WebRTC only, low-latency tuned)
 import os, time, math, signal, atexit, platform, shutil, subprocess, threading
 import cv2, numpy as np
-from flask import Flask, Response, request , jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO
 import asyncio
@@ -10,11 +10,11 @@ from fractions import Fraction
 import psutil, socket  # for cpu usages
 
 # ---- eventlet ----
-# asyncio(aiortc)와 충돌 방지를 위해 socket 패치는 끈다.
+# aiortc(asyncio)와 충돌 방지를 위해 socket 패치는 끈다.
 import eventlet
 eventlet.monkey_patch(socket=False)
 
-# --- WebRTC (UDP) 추가 임포트 ---
+# --- WebRTC (UDP) ---
 try:
     from aiortc import RTCPeerConnection, RTCSessionDescription, MediaStreamTrack
     from av import VideoFrame
@@ -30,11 +30,9 @@ except ImportError:
 
 # ================== 설정 ==================
 WIDTH, HEIGHT = 640, 480
-FPS = 30
-ROTATE_180 = True              # 필요 시 카메라 180도 회전
-JPEG_QUALITY = 80
-TARGET_MJPEG_FPS = 15          # WebRTC 프레임 타이밍에도 사용 (이름만 MJPEG)
-IDLE_STOP_SEC = 5.0            # 시청자 0명 지속 시 캡처 종료 지연
+FPS = 30                   # 실제 캡처 FPS
+ROTATE_180 = True          # 필요 시 카메라 180도 회전
+IDLE_STOP_SEC = 5.0        # 시청자 0명 지속 시 캡처 종료 지연
 
 FRAME_SIZE = WIDTH * HEIGHT * 3 // 2  # YUV420(I420) 한 프레임 바이트 수
 
@@ -47,14 +45,15 @@ except Exception:
 # Flask / SocketIO
 app = Flask(__name__, static_folder="static", static_url_path="/")
 CORS(app, supports_credentials=True)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")  # pip install eventlet
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
 
 # ================== 전역 상태 ==================
 rpicam = None              # rpicam-vid 프로세스 핸들
 cap = None                 # OpenCV VideoCapture 핸들(PC 테스트용)
 capture_thread = None
 capture_running = False
-latest_jpeg = None         # 최신 JPEG 바이트
+
+latest_bgr = None          # 최신 프레임 (BGR ndarray)
 latest_ts = 0.0            # 최신 프레임 타임스탬프
 
 active_viewers = 0         # 현재 시청자 수
@@ -76,52 +75,6 @@ def _start_asyncio_loop():
 def _run_coro(coro):
     # 다른 스레드에서 asyncio 코루틴 실행
     return asyncio.run_coroutine_threadsafe(coro, asyncio_loop)
-
-class CameraTrack(MediaStreamTrack):
-    kind = "video"
-    def __init__(self):
-        super().__init__()
-        self._ts = 0
-        self._time_base = Fraction(1, max(1, TARGET_MJPEG_FPS))
-
-    async def recv(self):
-        # 타이밍 (프레임 레이트)
-        await asyncio.sleep(1 / max(1, TARGET_MJPEG_FPS))
-
-        # 최신 JPEG → ndarray
-        with frame_lock:
-            buf = latest_jpeg
-
-        if not buf:
-            img = np.zeros((HEIGHT, WIDTH, 3), dtype=np.uint8)
-        else:
-            img = cv2.imdecode(np.frombuffer(buf, np.uint8), cv2.IMREAD_COLOR)
-            if img is None:
-                img = np.zeros((HEIGHT, WIDTH, 3), dtype=np.uint8)
-
-        frame = VideoFrame.from_ndarray(img, format="bgr24")
-        self._ts += 1
-        frame.pts = self._ts
-        frame.time_base = self._time_base
-        return frame
-
-async def _handle_offer(offer_sdp: str, offer_type: str):
-    pc = RTCPeerConnection()
-    pcs.add(pc)
-
-    @pc.on("connectionstatechange")
-    async def _on_state_change():
-        if pc.connectionState in ("failed", "closed", "disconnected"):
-            await pc.close()
-            pcs.discard(pc)
-            # 🔹 끊길 때 viewer 감소 + idle stop 트리거
-            _remove_viewer()
-
-    await pc.setRemoteDescription(RTCSessionDescription(sdp=offer_sdp, type=offer_type))
-    pc.addTrack(CameraTrack())
-    answer = await pc.createAnswer()
-    await pc.setLocalDescription(answer)
-    return pc.localDescription
 
 # ================== 유틸/카메라 ==================
 def has_rpicam() -> bool:
@@ -193,14 +146,11 @@ def read_exact(n: int) -> bytes:
         buf.extend(chunk)
     return bytes(buf)
 
-def encode_and_store(bgr: np.ndarray):
-    """BGR → JPEG 인코딩 후 전역 최신 프레임으로 저장"""
-    global latest_jpeg, latest_ts
-    ok, jpeg = cv2.imencode('.jpg', bgr, [int(cv2.IMWRITE_JPEG_QUALITY), JPEG_QUALITY])
-    if not ok:
-        return
+def store_frame(bgr: np.ndarray):
+    """최신 BGR 프레임 저장 (JPEG 인코딩 없이)"""
+    global latest_bgr, latest_ts
     with frame_lock:
-        latest_jpeg = jpeg.tobytes()
+        latest_bgr = bgr.copy()
         latest_ts = time.time()
 
 def capture_loop():
@@ -223,18 +173,20 @@ def capture_loop():
                 bgr = cv2.cvtColor(yuv, cv2.COLOR_YUV2BGR_I420)
                 if ROTATE_180:
                     bgr = cv2.rotate(bgr, cv2.ROTATE_180)
-                encode_and_store(bgr)
+                store_frame(bgr)
             elif cap is not None:
                 ok, bgr = cap.read()
                 if not ok:
-                    time.sleep(0.01)
+                    time.sleep(0.001)
                     continue
-                encode_and_store(bgr)
+                if ROTATE_180:
+                    bgr = cv2.rotate(bgr, cv2.ROTATE_180)
+                store_frame(bgr)
             else:
-                time.sleep(0.05)
+                time.sleep(0.01)
         except Exception:
             # 예외 시 잠깐 쉬고 재시작
-            time.sleep(0.05)
+            time.sleep(0.01)
 
 def start_capture_if_needed():
     """첫 시청자 유입 시 캡처 시작"""
@@ -268,7 +220,7 @@ def stop_capture_if_idle():
         idle_timer.daemon = True
         idle_timer.start()
 
-# --- viewer 카운트 헬퍼 (active_viewers와 idle stop 재사용) ---
+# --- viewer 카운트 헬퍼 ---
 def _add_viewer():
     global active_viewers
     with av_lock:
@@ -280,7 +232,7 @@ def _remove_viewer():
         active_viewers = max(0, active_viewers - 1)
     stop_capture_if_idle()
 
-# ================== 라우트 ==================
+# ================== Web ==================
 @app.route("/")
 def index():
     # static/index.html을 React 엔트리로 사용
@@ -290,50 +242,76 @@ def index():
 def health():
     return {"ok": True, "viewers": active_viewers, "ts": latest_ts}, 200
 
-# ================== (TCP MJPEG 경로 비활성화) ==================
-# @app.route("/video_feed")
-# def video_feed():
-#     """모든 클라이언트에게 최신 JPEG 프레임을 브로드캐스트(MJPEG)"""
-#     global active_viewers
-#     with av_lock:
-#         active_viewers += 1
-#     start_capture_if_needed()
-#
-#     def gen():
-#         last_ts_local = 0.0
-#         per_frame_delay = 1.0 / max(1, TARGET_MJPEG_FPS)
-#         try:
-#             while True:
-#                 with frame_lock:
-#                     buf = latest_jpeg
-#                     ts = latest_ts
-#                 if not buf:
-#                     time.sleep(0.01)
-#                     continue
-#                 if ts <= last_ts_local:
-#                     time.sleep(0.005)
-#                     continue
-#                 chunk = (b"--frame\r\n"
-#                          b"Content-Type: image/jpeg\r\n\r\n" +
-#                          buf + b"\r\n")
-#                 yield chunk
-#                 last_ts_local = ts
-#                 time.sleep(per_frame_delay)
-#         except (BrokenPipeError, ConnectionResetError, GeneratorExit, IOError):
-#             pass
-#         finally:
-#             with av_lock:
-#                 active_viewers = max(0, active_viewers - 1)
-#             stop_capture_if_idle()
-#
-#     headers = {
-#         "Cache-Control": "no-cache, private",
-#         "Pragma": "no-cache",
-#         "Connection": "keep-alive",
-#     }
-#     return Response(gen(), mimetype="multipart/x-mixed-replace; boundary=frame", headers=headers)
+# ================== (TCP MJPEG 경로 제거/비활성) ==================
+# UDP만 사용하므로 /video_feed 라우트는 제공하지 않음.
+# 필요하면 과거 MJPEG 라우트를 복구하세요.
 
 # ---- WebRTC 시그널링 (브라우저 → 서버, UDP) ----
+class CameraTrack(MediaStreamTrack):
+    """JPEG 재인코딩 없이 최신 BGR 프레임을 즉시 내보내 저지연화"""
+    kind = "video"
+    def __init__(self):
+        super().__init__()
+        self._ts = 0
+        self._last_ts = 0.0
+        self._time_base = Fraction(1, max(1, FPS))  # 송출 타임베이스
+
+    async def recv(self):
+        # 새 프레임 대기: 1ms 단위로 최대 ~1초 기다림 (큐 방지)
+        bgr = None
+        for _ in range(1000):
+            with frame_lock:
+                ts = latest_ts
+                if latest_bgr is not None:
+                    bgr = latest_bgr.copy()
+                else:
+                    bgr = None
+            if bgr is not None and ts != self._last_ts:
+                self._last_ts = ts
+                break
+            await asyncio.sleep(0.001)  # 1ms 폴링
+
+        if bgr is None:
+            bgr = np.zeros((HEIGHT, WIDTH, 3), dtype=np.uint8)
+
+        frame = VideoFrame.from_ndarray(bgr, format="bgr24")
+        self._ts += 1
+        frame.pts = self._ts
+        frame.time_base = self._time_base
+        return frame
+
+async def _handle_offer(offer_sdp: str, offer_type: str):
+    pc = RTCPeerConnection()
+    pcs.add(pc)
+
+    @pc.on("connectionstatechange")
+    async def _on_state_change():
+        if pc.connectionState in ("failed", "closed", "disconnected"):
+            await pc.close()
+            pcs.discard(pc)
+            _remove_viewer()
+
+    await pc.setRemoteDescription(RTCSessionDescription(sdp=offer_sdp, type=offer_type))
+
+    # 트랙 추가
+    track = CameraTrack()
+    sender = pc.addTrack(track)
+
+    # 🔻 인코더 큐 방지: 비트레이트/프레임레이트 상한
+    try:
+        params = sender.getParameters()
+        encs = params.encodings or [{}]
+        encs[0].update({"maxBitrate": 1_200_000, "maxFramerate": FPS})  # 1.2Mbps @ 30fps
+        params.encodings = encs
+        await sender.setParameters(params)
+    except Exception:
+        # 일부 환경에서 setParameters 미지원일 수 있음 → 무시
+        pass
+
+    answer = await pc.createAnswer()
+    await pc.setLocalDescription(answer)
+    return pc.localDescription
+
 @app.route("/rtc/offer", methods=["POST"])
 def rtc_offer():
     if not AIORTC_OK:
@@ -345,7 +323,7 @@ def rtc_offer():
     if not offer_sdp:
         return jsonify({"error": "missing sdp"}), 400
 
-    # WebRTC만 들어와도 캡처가 켜지도록
+    # WebRTC만 접속해도 캡처 시작
     start_capture_if_needed()
     _add_viewer()
 
@@ -353,7 +331,6 @@ def rtc_offer():
     try:
         desc = fut.result(timeout=5)
     except Exception as e:
-        # 실패 시 viewer 롤백
         _remove_viewer()
         return jsonify({"error": str(e)}), 500
 
