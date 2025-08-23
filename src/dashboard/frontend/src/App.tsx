@@ -1,6 +1,14 @@
 import { useState } from "react";
 import useTelemetry from "./hooks/useTelemetry";
 
+// function gearLabel(g: unknown): string {
+//   if (g === undefined || g === null) return "N";
+//   const s = String(g).toUpperCase();
+//   const map: Record<string, string> = { "0":"N", "1":"D", "2":"R", "3":"P", "N":"N", "D":"D", "R":"R", "P":"P" };
+//   return map[s] ?? s;
+// }
+
+
 function mapToAngle(val: number, max: number) {
   const clamped = Math.max(0, Math.min(max, val));
   return -90 + (clamped / max) * 180;
@@ -115,32 +123,32 @@ export default function App() {
           {/* 하단 보드 상태 */}
           <div className="grid grid-cols-5 gap-[2%]">
             {/* CPU Usage */}
-            <div className="p-4 rounded-2xl border bg-neutral-800 shadow-sm">
-              <div className="text-sm text-neutral-400 mb-2">CPU Usage</div>
-              <div className="w-full bg-neutral-700 rounded-full h-3 overflow-hidden">
-                <div
-                  className="bg-indigo-500 h-3 transition-all duration-300"
-                  style={{ width: `${t.cpu ?? 0}%` }}
-                ></div>
-              </div>
-              <div className="text-sm text-neutral-300 mt-1">
-                {t.cpu ?? 0} %
-              </div>
+            <div className="p-4 rounded-2xl border bg-neutral-800 shadow-sm flex flex-col items-center justify-center">
+            <div className="text-sm text-neutral-400 mb-2">CPU Usage</div>
+            <div className="w-3/4 bg-neutral-700 rounded-full h-3 overflow-hidden">
+              <div
+                className="bg-indigo-500 h-3 transition-all duration-300"
+                style={{ width: `${t.cpu ?? 0}%` }}
+              />
             </div>
+            <div className="text-sm text-neutral-300 mt-1">{t.cpu ?? 0} %</div>
+          </div>
 
-            {/* 배터리 */}
-            <div className="p-4 rounded-2xl border bg-neutral-800 shadow-sm">
-              <div className="text-sm text-neutral-400 mb-2">Battery</div>
-              <div className="w-full bg-neutral-700 rounded-full h-3 overflow-hidden">
-                <div
-                  className="bg-emerald-500 h-3 transition-all duration-300"
-                  style={{ width: `${t.battery}%` }}
-                ></div>
-              </div>
-              <div className="text-sm text-neutral-300 mt-1">
-                {t.battery} %
-              </div>
+
+
+            {/* Battery */}
+            <div className="p-4 rounded-2xl border bg-neutral-800 shadow-sm flex flex-col items-center justify-center">
+            <div className="text-sm text-neutral-400 mb-2">Battery</div>
+            <div className="w-3/4 bg-neutral-700 rounded-full h-3 overflow-hidden">
+              <div
+                className="bg-emerald-500 h-3 transition-all duration-300"
+                style={{ width: `${t.battery}%` }}
+              />
             </div>
+            <div className="text-sm text-neutral-300 mt-1">{t.battery} %</div>
+          </div>
+
+
 
             {/* 네트워크 상태 */}
             <div className="p-4 rounded-2xl border bg-neutral-800 shadow-sm flex flex-col items-center justify-center">
@@ -156,10 +164,13 @@ export default function App() {
             </div>
 
             {/* Gear */}
-            <div className="p-4 rounded-2xl border bg-neutral-800 shadow-sm">
-              <div className="text-sm text-neutral-400">Gear</div>
-              <div className="text-4xl font-bold mt-1">{t.gear}</div>
+            <div className="p-4 rounded-2xl border bg-neutral-800 shadow-sm flex flex-col items-center justify-center">
+            <div className="text-sm text-neutral-400">Gear</div>
+            <div className="mt-2 text-4xl font-bold text-neutral-100">
+              {t.gear ?? "N"}
             </div>
+          </div>
+
 
             {/* 리셋 버튼 */}
             <button
